@@ -1,0 +1,91 @@
+/* Bootstrap Classes */
+nav.navbar.navbar-default {
+    min-height: 100px;
+    padding-top: 25px;
+}
+
+.navbar-brand {
+  padding: 0px;
+}
+
+.navbar-brand>img {
+  height: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: auto;
+}
+
+/* ----------------- */
+body {
+  /*font-family: 'Roboto', sans-serif;*/
+  background-color: #EFEBE9;
+}
+
+#site_brand_text {
+  font-family: 'Pacifico', cursive;
+  display: inline-block;
+  padding-top:10px;
+  font-size: 1.5em;
+}
+
+.travscapade {
+  margin-top:25px;
+}
+
+.travscapade img {
+  height: auto;
+  width:500px;
+}
+
+.travscapade p span {
+  padding-top:25px;
+  padding-bottom: 25px;
+  cursor:pointer;
+}
+
+.travscapade p {
+  width:500px;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  border:1px solid;
+  border-color:rgba(0,0,0, 0.2);
+  margin-bottom: 0px;
+}
+
+.controls {
+  background-color: #EFEBE9;
+}
+
+#heart {
+  margin-right: 100px;
+  font-size: 1.2em;
+}
+
+#plus {
+  margin-left: 100px;
+  font-size: 1.2em;
+}
+
+#travel-type {
+  margin-top:25px;
+  margin-right:100px;
+}
+
+#user-photo {
+  margin-left: 100px;
+}
+
+#details {
+  margin-left: auto;
+  margin-right: auto;
+  width:500px;
+  background-color: white;
+  border-top:0px;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  border-color:rgba(0,0,0, 0.2);
+  padding-top:20px;
+  padding-bottom: 20px;
+}
