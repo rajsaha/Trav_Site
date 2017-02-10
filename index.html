@@ -14,18 +14,22 @@
     <link href="css/travscapade_styles.css" rel="stylesheet">
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Pacifico|Roboto:300|Roboto" rel="stylesheet"
+    <link href="https://fonts.googleapis.com/css?family=Pacifico|Roboto:300,400,700" rel="stylesheet" />
 
     <!-- Navbar -->
     <nav class="navbar navbar-default">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">
-            <img alt="Travscapade" src="images/travscapade-logo.svg" id="site_brand" class="clip-square">
-          </a>
-          <p alt="Travscapade" id="site_brand_text">Travscapade</p>
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">
+                    <img alt="Travscapade" src="images/travscapade-logo-optim.svg" id="site_brand" class="clip-square">
+                </a>
+                <p alt="Travscapade" id="site_brand_text"><b>TRAV</b><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span><span>SCAPADE</span></p>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="signin.html"><span class="glyphicon glyphicon-user" alt="Sign In"></span></a></li>
+            </ul>
         </div>
-      </div>
     </nav>
 
     <!-- Scripts -->
@@ -41,7 +45,7 @@
         <!-- <div class="row">
           <div class="col-md-12 text-center travscapade">
             <div class="user-content" id="image-box">
-              <img src="images/witcher.png"/>
+              <img src="images/witcher.png"/ class="travimage">
               <div class="location-text">
                 <p>
                   Novigrad, Temeria
@@ -66,10 +70,12 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer footer-override">
+    <footer class="footer-override">
         <div class="container">
-            <div class="row">
-
+            <div class="col-md-12 col-xs-12">
+                <p class="copyright-text">
+                    &copy Travscapade
+                </p>
             </div>
         </div>
     </footer>

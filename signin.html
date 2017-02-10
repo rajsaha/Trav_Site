@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign In</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- SAI RDK style sheets -->
+    <link href="css/travscapade_styles.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Pacifico|Roboto:300,400,700" rel="stylesheet" />
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!-- Navbar -->
+    <!-- <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">
+                    <img alt="Travscapade" src="images/travscapade-logo.svg" id="site_brand" class="clip-square">
+                </a>
+                <p alt="Travscapade" id="site_brand_text">Travscapade</p>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="signin.html"><span class="glyphicon glyphicon-user" alt="Sign In"></span></a></li>
+            </ul>
+        </div>
+    </nav> -->
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 visible-md visible-lg signin-lc-bg">
+                <svg id="travscapade-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400.2 400">
+                <defs>
+                  <clipPath id="b">
+                    <rect width="400" height="400" x="244.4" y="429.4" transform="rotate(-44.872)" ry="0"/>
+                  </clipPath>
+                  <clipPath id="c">
+                    <rect width="400" height="400" x="244.4" y="429.4" transform="rotate(-44.872)" ry="0"/>
+                  </clipPath>
+                  <linearGradient id="a" x1="227" x2="222.3" y1="5.5" y2="547.9" spreadMethod="reflect" gradientUnits="userSpaceOnUse" gradientTransform="translate(-23.514 -23.619)">
+                    <stop offset="0" stop-color="#ff6a00"/>
+                    <stop offset="1" stop-color="#ee0979"/>
+                  </linearGradient>
+                </defs>
+                <rect id="rect-bg" class="border-no-fill transition-color" width="400" height="400" x=".2" fill="url(#a)" ry="0"/>
+                <g fill="#040404" transform="translate(-10.113 -6.2768)">
+                  <rect id="hill1" class="border-no-fill transition-color" width="282.9" height="282.9" x="617.7" y="273.8" fill-opacity=".2" transform="matrix(.70868 .70553 -.70553 .70868 -234.28 -423.23)" clip-path="url(#b)" ry="0"/>
+                  <rect id="hill2" class="border-no-fill transition-color" width="282.9" height="282.9" x="617.7" y="273.8" fill-opacity=".6" transform="matrix(-.70868 .70553 .70553 .70868 654.66 -423.21)" clip-path="url(#c)" ry="0"/>
+                </g>
+                <g fill="#ebcb29" fill-opacity=".8" transform="translate(-10.113 -6.2768)">
+                  <circle id="sun1" class="border-no-fill transition-color" cx="210.1" cy="139.3" r="65.2"/>
+                  <circle id="sun2" class="border-no-fill transition-color" cx="210.8" cy="139.2" r="45.6"/>
+                </g>
+                <rect id="mountain" class="border-no-fill transition-color" width="220.2" height="220.2" x="-82.6" y="215.4" fill="#e0372c" fill-opacity=".6" transform="translate(-10.113 -6.2768) matrix(-.70868 .70553 .70553 .70868 0 0)" ry="0"/>
+              </svg>
+
+
+                <div>
+                    <p alt="Travscapade" id="site_brand_text_signin"><b>TRAV</b><span class="glyphicon glyphicon-map-marker" aria-hidden="true" id="map-marker"></span><span>SCAPADE</span></p>
+                </div>
+            </div>
+
+            <div class="col-md-6 signin-rc-bg">
+                <div class="signin-box center-object">
+                    <h1>Sign In</h1>
+                    <div class="input-group">
+                        <form class="" action="index.html" method="post">
+                            <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" id="username">
+                            <input type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1" id="password">
+                            <button type="button" class="btn btn-primary center-object" id="signin">SIGN IN</button>
+                        </form>
+                    </div>
+                    <p class="alternative-login hover-shadow">
+                        <a href="https://www.facebook.com"><i class="fa fa-facebook" aria-hidden="true"></i>&nbsp&nbspSign In</a>
+                        <span id="OR">OR</span>
+                        <a href="https://plus.google.com/"><i class="fa fa-google-plus-official" aria-hidden="true"></i>&nbsp&nbspSign In</a>
+                    </p>
+
+                    <p class="signup-box hover-shadow">
+                        <a>Don't have an account? <span>Sign Up</span></a>
+                    </p>
+
+                    <div>
+                        <a href='https://play.google.com/store/apps/details?id=travnet.discovery&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+                            <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' class="center-object" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <!-- <footer>
+        <div class="container">
+            <div class="col-md-12 col-xs-12">
+                <p class="copyright-text">
+                    &copy Travscapade
+                </p>
+            </div>
+        </div>
+    </footer> -->
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/signin_script.js"></script>
+</body>
+
+</html>
