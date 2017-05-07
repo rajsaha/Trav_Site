@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!--script type="text/javascript">
+    if (sessionStorage.getItem("isLogged") != "true") {
+        window.location = "/signin.html";
+    }
+
+</script-->
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,6 +20,9 @@
     <!-- SAI RDK style sheets -->
     <link href="css/travscapade_styles.css" rel="stylesheet">
 
+    <!-- FAB -->
+        <link href="css/kc.fab.css" rel="stylesheet">
+    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Pacifico|Roboto:300,400,700" rel="stylesheet" />
 
@@ -35,6 +45,7 @@
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/kc.fab.js"></script>
     <script src="js/trav_script.js"></script>
 
 </head>
@@ -68,6 +79,8 @@
           </div>
         </div> -->
     </div>
+
+    <div class="kc_fab_wrapper" ></div>
 
     <!-- Footer -->
     <footer class="footer-override">

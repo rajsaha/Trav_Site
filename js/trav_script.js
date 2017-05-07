@@ -1,4 +1,31 @@
 $(document).ready(function() {
+
+
+  var links = [
+                {   /* The first object will be the main button */
+                    "bgcolor":"red",
+                    "icon":"+"
+                },
+                /* Following are the hidden button list */
+                {
+                    "url":"/add_picture.html",
+                    "bgcolor":"red",
+                    "color":"#fffff",
+                    "icon":"<img src='images/icon_add_picture.svg' style='width: 100%;'/>",
+                    "title":"Add Photo"
+                    
+                },
+                {
+                    "url":"/add_blog.html",
+                    "bgcolor":"red",
+                    "color":"#fffff",
+                    "icon":"<img src='images/icon_add_blog.svg' style='width: 60%;'/>",
+                    "title":"Add Blog"
+                }
+            ]
+  $('.kc_fab_wrapper').kc_fab(links);
+
+
   
   var test = new XMLHttpRequest();
   test.open('GET', "http://54.169.51.25/api/getCards", true);
