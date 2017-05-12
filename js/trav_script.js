@@ -1,7 +1,6 @@
 $(document).ready(function() {
 
-
-  var links = [
+var links = [
                 {   /* The first object will be the main button */
                     "bgcolor":"red",
                     "icon":"+"
@@ -26,8 +25,26 @@ $(document).ready(function() {
   $('.kc_fab_wrapper').kc_fab(links);
 
 
+  Backend.getCards(function(data) {
+    console.log(typeof data);
+    var output = '';
+    $.each(data.cards, function(k, v) {
+      console.log("card");
+      output = '<div class="row"><div class="col-md-12 text-center travscapade"><div class="user-content">';
+      output += '<img src="' + v.url + '" id="'+ v._id + '" class="travimage" data-name="travimage"/>';
+      output += '<div class="location-text"><p class="'+ v._id +'">'+ v.location +'</p></div>';
+      output += '</div><div><p class="text-center">';
+      output += '<button class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
+      output += '<button class="glyphicon glyphicon-plus button-override" aria-hidden="true" id="plus"></button><br /></p></div><div id="details">';
+      output += '<a id="travel-type">' + v.interests + '</a>';
+      output += '<a id="user-photo">' + v.user_name + '</a>';
+      output += '<a><img src="' + v.user_profile_pic + '"/></a>';
+      output += '</div></div></div>';
+      $('#update').append(output);
+    });
+  });
   
-  var test = new XMLHttpRequest();
+  /*var test = new XMLHttpRequest();
   test.open('GET', "http://54.169.51.25/api/getCards", true);
   //test.open('GET', "http://localhost:8080/api/getCards", true);
   test.send();
@@ -57,7 +74,8 @@ $(document).ready(function() {
 
       }
     }    
-  } 
+  } */
+
 
 
 

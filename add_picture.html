@@ -1,7 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-<body>
-	Add Picture
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Picture</title>
 
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Slim Cropper -->
+    <link rel="stylesheet" href="css/slim.min.css" />
+    
+  </head>
+  
+
+  <body>
+
+    <section id="picture">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+          </div>
+          
+          <div class="col-md-4">
+            <div id="myCropper">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+          </div>
+
+        </div>
+      </div>
+    </section>
+  	
+    
+    <section id="info">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+          </div>
+          
+          <div class="col-md-4">
+            <form>
+              Name:<br>
+              <input type="text" name="title"><br>
+              Description:<br>
+              <input type="text" name="description"><br>
+              <!--input id="submit-button" type="submit" value="Upload"-->
+            </form>
+
+            <button id="submit-button">Upload</button>
+          </div>
+
+          <div class="col-md-4">
+          </div>
+
+        </div>
+      </div>
+    </section>
+    
+
+
+
+	<!--button id="button-upload" type="button">Upload</button-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- Slim Cropper -->
+    <script src="js/slim.kickstart.js"></script>
+    <!-- Amazon AWS -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.20.min.js"></script>
+
+    <script src="js/add_picture.js"></script>    
+
+  </body>
 </html>

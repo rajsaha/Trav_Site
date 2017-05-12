@@ -1,35 +1,17 @@
-var url = "http://54.169.51.25/api/";
+function onLogin (name, email, type, id, ppURL) {
+  console.log('Logged in.' + ' name ' + name + ' email ' + email, + ' type ' + type + ' id ' + id + ' ppurl ' + ppURL);
 
-
-function getUserID(name, userEmail, callback) {
-  var req = new XMLHttpRequest();
-  req.open('POST', url + "registerUser", true);
-  req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  req.send(JSON.stringify({name:name, email:userEmail})); 
-  req.onreadystatechange = processRequest
- 
- function processRequest(e) {
-    if (req.readyState == 4 ) {
-      console.log(req.statusText);
-      if (req.status == 200) {
-        console.log(req.response);
-        var res = JSON.parse(req.response);
-        callback(res.user_id);
-      }
-    }    
-  } 
-}
-
-
-
-function onLogin (name, email) {
-  console.log('Logged in.');
-  getUserID(name, email, function(id) {
+  Backend.getUserID(name, email, type, id, ppURL, function(id) {
     console.log(id);
     sessionStorage.setItem('isLogged','true');
+    sessionStorage.setItem('userID', id);
     window.location = "/index.html"; 
   });
 }
+
+
+
+
 
 
 $(document).ready(function() {
@@ -50,15 +32,18 @@ $(document).ready(function() {
 
     FB.getLoginStatus(function(response) {
       if (response.status === 'connected') {
-        FB.api('/me', {fields: 'name, email'}, function(response) {
-            onLogin(response.name, response.email);
+        sessionStorage.setItem('token', response.authResponse.accessToken);
+        FB.api('/me', {fields: 'name, email, id, picture'}, function(response) {
+            console.log(response);
+            onLogin(response.name, response.email, "fb", response.id, response.picture.data.url);
         });
       }
       else {
         document.getElementById("fb-login-button").onclick = function () { 
           FB.login(function(response) {
+            sessionStorage.setItem('token', response.authResponse.accessToken);
             onLogin(response.name, response.email);
-          }, {scope: 'name, email'}); 
+          }, {scope: 'name, email, id, picture'}); 
         };
       }
     });
