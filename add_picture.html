@@ -45,11 +45,16 @@
           <div class="col-md-4">
             <form>
               Name:<br>
-              <input type="text" name="title"><br>
+              <input id="heading" type="text" name="title"><br>
               Description:<br>
-              <input type="text" name="description"><br>
+              <input id="description" type="text" name="description"><br>
               <!--input id="submit-button" type="submit" value="Upload"-->
             </form>
+            Location:<br>
+            <input id="autocomplete" type="text"></input><br> 
+            Interest:<br>
+            <select id="interest-list">
+            </select><br>
 
             <button id="submit-button">Upload</button>
           </div>
@@ -74,6 +79,10 @@
     <script src="js/slim.kickstart.js"></script>
     <!-- Amazon AWS -->
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.20.min.js"></script>
+    <!-- Google Place -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&libraries=places"></script>
+    <!-- Backend -->
+    <script src="js/backend.js"></script>    
 
     <script src="js/add_picture.js"></script>    
 

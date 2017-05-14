@@ -1,6 +1,20 @@
 $(document).ready(function() {
 
-var links = [
+
+
+  //Get Interest List
+  Backend.getInterests(function(interstList) {
+    sessionStorage.setItem('interestList', interstList);
+    console.log(typeof interstList);
+    console.log(interstList);
+  })
+
+
+
+
+
+
+  var links = [
                 {   /* The first object will be the main button */
                     "bgcolor":"red",
                     "icon":"+"
