@@ -1,7 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<body>
-	Add Blog
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Blog</title>
 
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Interest Select Modal -->
+    <link href="css/modal-interest-select.css" rel="stylesheet">
+    
+  </head>
+  
+
+  <body>
+
+    <section>
+      <div id="select-interest-modal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span id="button-close-modal" class="close">&times;</span>
+          Please select upto 3 interests.
+          <div id=interest-list>
+          </div>
+        </div>
+
+
+      </div>
+
+    </section>
+
+
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+          </div>
+          
+          <div class="col-md-4">
+          	<div id="title"></div> 
+          	<img id="thumbnail" style="width:100%; display:none;"></img>
+            <div id="extract"></div> 
+            Enter URL<br>
+          	<input id="blog-url" type="text"></input>
+            <button id="preview-button">Preview</button><br>
+            <div id="location-input" style="display:none;">
+            	Location:<br>
+            	<input id="autocomplete" type="text"></input><br>
+            </div>
+            <div id="interest-input" style="display:none;">
+            	Interest:<br>
+            	<input type='text' id="button-select-interest" ></button>
+            </div>
+            <button id="upload-button" style="display:none;">Upload</button>
+          </div>
+
+          <div class="col-md-4">
+          </div>
+
+        </div>
+      </div>
+    </section>
+  
+
+	<!--button id="button-upload" type="button">Upload</button-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- Google Place -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&libraries=places"></script>
+    <!-- Backend -->
+    <script src="js/backend.js"></script>    
+
+    <script src="js/add_blog.js"></script>    
+
+  </body>
 </html>

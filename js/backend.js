@@ -118,6 +118,59 @@ function getInterests(callback) {
     }
 
 
+    function getLinkPreview(link, callback) {
+      var req = new XMLHttpRequest();
+      req.open('POST', url + "getLinkPreview", true);
+      req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      req.send(JSON.stringify({link:link})); 
+      req.onreadystatechange = processRequest
+
+      function processRequest(e) {
+        if (req.readyState == 4 ) {
+          console.log(req.statusText);
+          if (req.status == 200) {
+            var res = JSON.parse(req.response);
+            callback(null, res);
+          } else {
+            callback("err");
+          } 
+        }    
+      } 
+    }
+
+
+
+    function postBlogCard(userID, blogUrl, blogTitle, blogExtract, thumbnailUrl, selectedInterests, locationID, locationString, latitude, longitude, callback) {
+    var req = new XMLHttpRequest();
+    req.open('POST', url + "registerCard", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    var param = {
+      user_id:userID,
+      card_type:"blog",
+      url:blogUrl,
+      title:blogTitle,
+      thumbnail:thumbnailUrl,
+      description:blogExtract,
+      interests:selectedInterests,
+      location_id:locationID,
+      location:locationString,
+      latitude:latitude,
+      longitude:longitude,
+    };
+    req.send(JSON.stringify(param)); 
+    req.onreadystatechange = processRequest
+    
+     function processRequest(e) {
+        if (req.readyState == 4 ) {
+          console.log(req.statusText);
+          if (req.status == 200) {
+            //console.log(req.response);
+            var res = JSON.parse(req.response);
+            callback();
+          }
+        }    
+      } 
+    }
 
 
 
@@ -126,7 +179,9 @@ function getInterests(callback) {
     getCards: getCards,
     getInterests: getInterests,
     getUserPictureCount: getUserPictureCount,
-    postPictureCard: postPictureCard
+    postPictureCard: postPictureCard,
+    getLinkPreview: getLinkPreview,
+    postBlogCard:postBlogCard
   }
 
    
