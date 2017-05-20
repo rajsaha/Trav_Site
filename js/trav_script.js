@@ -39,8 +39,7 @@ $(document).ready(function() {
   $('.kc_fab_wrapper').kc_fab(links);
 
 
-  Backend.getCards("588b2b72da66b9a4379fc335", 500, 500, function(data) {
-    console.log(typeof data);
+  Backend.getCards("589593bbac48cd73cb0811aa", 500, 500, function(data) {
     var output = '';
     $.each(data.cards, function(k, v) {
       console.log(v);
@@ -55,9 +54,9 @@ $(document).ready(function() {
         output +=     '</div>';
         output +=     '<div>'; 
         output +=       '<p class="text-center">';
-        output +=         '<button class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
+        output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
         output +=         '<span class="likes">' + v.likes + '</span>';
-        output +=         '<button class="glyphicon glyphicon-plus button-override" aria-hidden="true" id="plus"></button>';
+        output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
         output +=         '<span>' + v.bucket_count + '</span>';
         output +=       '</p><br />';
         output +=     '</div>';
@@ -81,9 +80,11 @@ $(document).ready(function() {
         output +=     '<div id="location_' + v._id + '" class="location-text-blog"><p class="'+ v._id +'">'+ v.location +'</p></div>';
         output +=     '<div>'; 
         output +=       '<p class="text-center">';
-        output +=         '<button class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
+        output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
+        //output +=         '<button class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
         output +=         '<span class="likes">' + v.likes + '</span>';
-        output +=         '<button class="glyphicon glyphicon-plus button-override" aria-hidden="true" id="plus"></button>';
+        output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
+        //output +=         '<button class="glyphicon glyphicon-plus button-override" aria-hidden="true" id="plus"></button>';
         output +=         '<span>' + v.bucket_count + '</span>';
         output +=       '</p><br />';
         output +=     '</div>';
@@ -96,9 +97,17 @@ $(document).ready(function() {
         output +=  '</div>';
       }
 
-
-
       $('#update').append(output);
+
+      if(v.is_liked == true){
+        onLike(v._id);
+      } 
+
+      if(v.is_bucket_listed == true){
+        console.log(v._id);
+        onBucketList(v._id);
+      }
+
     });
   });
   
@@ -161,12 +170,11 @@ $(document).ready(function() {
     }); //get json data from URL*/
 
     $(document).on("click", ".heart" , function() {
-      var image_id = $(this).attr("value");
-      var interest = $("#travel-type." + image_id).text();
-      var location = $("."+image_id).text();
-      $(this).css("color","red");
-      $(this).css("-webkit-text-stroke", "0px");
-      $('#overlay_'+image_id).css("display", "block");
+      //$(this).css("color","red");
+      //$(this).css("-webkit-text-stroke", "0px");
+      var imageID = $(this).attr("value");
+      onLike(imageID);
+      /*$('#overlay_'+image_id).css("display", "block");
       $('#location_'+image_id).css("display", "block");
       $('#description_'+image_id).css("display", "block");
 
@@ -191,6 +199,26 @@ $(document).ready(function() {
 
     }); //like button (heart) function
 
+
+
+    $(document).on("click", ".glyphicon-plus" , function() {
+      var imageID = $(this).attr("value");
+      onBucketList(imageID);
+    });
+
+
+    function onLike(imageID) {
+      $('#like_button_'+imageID).css("color","red");
+      $('#like_button_'+imageID).css("-webkit-text-stroke", "0px");
+      $('#overlay_'+imageID).css("display", "block");
+      $('#location_'+imageID).css("display", "block");
+      $('#description_'+imageID).css("display", "block");
+    }
+
+    function onBucketList(imageID) {
+      $('#bucket_button_'+imageID).css("color","red");
+      $('#bucket_button_'+imageID).css("-webkit-text-stroke", "0px");
+    }
 
 
     $(document).on("dblclick",".travimage", function() {
