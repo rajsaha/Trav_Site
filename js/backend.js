@@ -22,10 +22,11 @@ var Backend = (function() {
   }
 
 
-  function getCards(callback) {
+  function getCards(userID, lat, lng, callback) {
     var req = new XMLHttpRequest();
-    req.open('GET', url + "getCards", true);
-    req.send();
+    req.open('POST', url + "getCards", true);
+     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({user_id:userID, latitude:lat, longitude:lng}));
     req.onreadystatechange = processRequest
 
     function processRequest(e) {
