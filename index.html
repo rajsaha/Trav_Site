@@ -21,7 +21,10 @@
     <link href="css/travscapade_styles.css" rel="stylesheet">
 
     <!-- FAB -->
-        <link href="css/kc.fab.css" rel="stylesheet">
+    <link href="css/kc.fab.css" rel="stylesheet">
+
+    <!--Modal -->
+    <link href="css/modal-interest-select.css" rel="stylesheet">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Pacifico|Roboto:300,400,700" rel="stylesheet" />
@@ -47,11 +50,34 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/kc.fab.js"></script>
     <script src="js/backend.js"></script>
-    <script src="js/trav_script.js"></script>
-
+    <script src="js/trav_script.js" defer></script>
+    <!--script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&callback=initMap">
+    </script-->
+    
 </head>
 
 <body>
+
+    <section>
+      <div id="location-info-modal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span id="button-close-modal" class="close">&times;</span>
+          <div id="map" style="height:300px;"></div>
+          <div id="location-info">
+            <p id="location-info-name"></p>
+            <p id="location-info-summary"></p>
+            <a id="location-info-link">Read More</a>
+          </div>
+          <div id="score-bar" style="height:30px;"></div>;
+        </div>
+      </div>
+    </section>
+
+
+
     <div class="container" id="update">
         <!-- Testing Travscapade with Witcher Geralt -->
         <!-- <div class="row">

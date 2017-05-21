@@ -1,3 +1,7 @@
+var map;
+var destination = {lat: 0, lng: 0};
+var marker;
+
 $(document).ready(function() {
 
   var userID = sessionStorage.getItem('userID');
@@ -10,6 +14,10 @@ $(document).ready(function() {
   })
 
 
+  var js_file = document.createElement('script');
+  js_file.type = 'text/javascript';
+  js_file.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&callback=initMap';
+  document.getElementsByTagName('head')[0].appendChild(js_file);
 
 
 
@@ -38,11 +46,15 @@ $(document).ready(function() {
             ]
   $('.kc_fab_wrapper').kc_fab(links);
 
+  var cardsArray;
 
-  Backend.getCards("589593bbac48cd73cb0811aa", 500, 500, function(data) {
+
+  //Backend.getCards("589593bbac48cd73cb0811aa", 500, 500, function(data) {
+  Backend.getCards(userID, 500, 500, function(data) {
     var output = '';
+    cardsArray = data.cards;
     $.each(data.cards, function(k, v) {
-      console.log(v);
+      //console.log(v);
       
       if (v.card_type == 'photo') {
         output =  '<div class="row">';
@@ -50,7 +62,7 @@ $(document).ready(function() {
         output +=     '<div class="user-content">';
         output +=       '<img src="' + v.url + '" id="'+ v._id + '" class="travimage" data-name="travimage" />';
         output +=       '<div id="overlay_' + v._id + '" class="overlay-picture"></div>';
-        output +=       '<div id="location_' + v._id + '" class="location-text-picture"><p class="'+ v._id +'">'+ v.location +'</p></div>';
+        output +=       '<div id="location_' + v._id + '" value="' + v._id + '" class="location-text-picture"><p class="'+ v._id +'">'+ v.location +'</p></div>';
         output +=     '</div>';
         output +=     '<div>'; 
         output +=       '<p class="text-center">';
@@ -221,6 +233,109 @@ $(document).ready(function() {
     }
 
 
+    $(document).on("click", ".location-text-picture" , function() {
+      openLocationInfoModal($(this).attr("value"));
+    });
+
+
+    $('#button-close-modal').click(function() {
+      closeLocationInfoModal();
+    });
+
+
+    function openLocationInfoModal(cardID) {
+      $('#location-info-modal').css("display", "block");
+      var card = getCard(cardID);
+      console.log(card);
+
+      google.maps.event.trigger(map, "resize");
+      if(marker)
+        marker.setMap(null);
+      //map.clearOverlays();
+      destination = {lat: card.latitude, lng: card.longitude};
+      marker = new google.maps.Marker({
+        position: destination,
+        map: map
+      });
+      map.panTo(destination);
+     
+
+
+
+
+      $('#location-info-name').html(card.location_info_name);
+      $('#location-info-summary').html(card.location_info_summary);
+      $('#location-info-link').attr("href", card.location_info_link);
+
+      var monthNames = ['Jan', 'Feb', 'Mar', "Apr", "May", "Jun", 'Jul', 'Aug', 'Sep', "Oct", 'Nov', 'Dec'];
+      var scoreBar = $('#score-bar');
+      scoreBar.empty();
+      for (var i=0; i<12; i++) {
+        var mon = $('<span/>', {'text':monthNames[i]});
+        mon.css('display', 'inline-block');
+        mon.css('width', '8.3%');
+        if(i==0) {
+          mon.css('margin-left', '0.2%');
+        }
+        var score = Math.floor(card.location_score[i]);
+        if (score == 3)
+          score =2;
+        var nxtScore = -1;
+        if(i<11) {
+          nxtScore = Math.floor(card.location_score[i+1]);
+        } else {
+          nxtScore = Math.floor(card.location_score[0]);
+        }
+        if(nxtScore == 3)
+          nxtScore=2;
+        
+        if (score == nxtScore || i == 11) {
+          if(score == 0) {
+            mon.css('background', 'red');
+          } else if (score == 1) {
+            mon.css('background', 'yellow');
+          } else {
+            mon.css('background', 'green');
+          }
+        }
+
+        if(score == 0 && nxtScore == 1) {
+          mon.css('background', 'linear-gradient(to right, red, yellow)');
+        } else if (score == 1 && nxtScore == 0) {
+          mon.css('background', 'linear-gradient(to right, yellow, red)');
+        } else if (score == 1 && nxtScore == 2) {
+          mon.css('background', 'linear-gradient(to right, yellow, green)');
+        } else if (score == 2 && nxtScore == 1) {
+          mon.css('background', 'linear-gradient(to right, green, yellow)');
+        } else if (score == 0 && nxtScore == 2) {
+          mon.css('background', 'linear-gradient(to right, red, green)');
+        } else if (score == 2 && nxtScore == 0) {
+          mon.css('background', 'linear-gradient(to right, green, red)');
+        }
+
+        mon.appendTo(scoreBar);
+      }
+      
+    }
+
+
+    function closeLocationInfoModal() {
+      $('#location-info-modal').css("display", "none");
+    }
+
+
+
+  
+
+    function getCard(cardID) {
+      for (var i=0; i<cardsArray.length;i++) {
+        if (cardsArray[i]._id == cardID) {
+          return cardsArray[i];
+        }
+      }
+    }
+
+
     $(document).on("dblclick",".travimage", function() {
       var image_id = $(this).attr("id");
       console.log(image_id);
@@ -247,3 +362,14 @@ $(document).ready(function() {
       },2500);
     }); //double-click on image to like function
 }); //document ready
+
+
+
+
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: destination,
+    zoom: 4
+  });
+}
