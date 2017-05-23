@@ -175,6 +175,28 @@ function getInterests(callback) {
 
 
 
+    function getBucketList(userID, callback) {
+      var req = new XMLHttpRequest();
+      req.open('POST', url + "getBucketList", true);
+      req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      req.send(JSON.stringify({user_id:userID})); 
+      req.onreadystatechange = processRequest
+
+      function processRequest(e) {
+        if (req.readyState == 4 ) {
+          console.log(req.statusText);
+          if (req.status == 200) {
+            var res = JSON.parse(req.response);
+            callback(null, res.bucket_list);
+          } else {
+            callback("err");
+          } 
+        }    
+      } 
+    }
+
+
+
   return {
     getUserID: getUserID,
     getCards: getCards,
@@ -182,7 +204,8 @@ function getInterests(callback) {
     getUserPictureCount: getUserPictureCount,
     postPictureCard: postPictureCard,
     getLinkPreview: getLinkPreview,
-    postBlogCard:postBlogCard
+    postBlogCard:postBlogCard,
+    getBucketList:getBucketList
   }
 
    
