@@ -1,8 +1,6 @@
 $(document).ready(function() {
 
 	var userID = sessionStorage.getItem('userID');
-	var selectedInterests = [];
-	var interestsShown = false;
 	var blogTitle;
 	var blogUrl;
 	var thumbnailUrl;
@@ -38,7 +36,7 @@ $(document).ready(function() {
 					        {types: ['geocode']});
 
 					$('#interest-input').click(function() {
-						openInterestSeletion();
+						openInterestSeletion(null, onInterestSelected);
 					}) 
 					
 				}
@@ -51,12 +49,9 @@ $(document).ready(function() {
 
 
 	$('#interest-input').click(function() {
-		openInterestSeletion();
+		openInterestSeletion(null, onInterestSelected);
 	});
 
-	$('#button-close-modal').click(function() {
-		closeInterestSeletion();
-	});
 
 
 	function closeInterestSeletion() {
@@ -66,8 +61,15 @@ $(document).ready(function() {
 	}
 	
 
-	function openInterestSeletion() {
+	var interestsShown = false;
+
+	function openInterestSeletion(preSelectedInterests, callback) {
+		var selectedInterests = [];
 		$('#select-interest-modal').css('display', 'block');
+		$('#button-close-modal').click(function() {
+			closeInterestSeletion();
+		});
+
 		if(interestsShown)
 			return;
 
@@ -92,17 +94,23 @@ $(document).ready(function() {
 					//console.log($( this ).val());
 				}
 			});
+
+			callback(selectedInterests);
 			
-			console.log(selectedInterests);
-			showSelectedInterest();
-			closeInterestSeletion();
+			
 		});
 			
 		
 	}
 
+	function onInterestSelected(selectedInterests) {
+		console.log(selectedInterests);
+		showSelectedInterest(selectedInterests);
+		closeInterestSeletion();
+	}
 
-	function showSelectedInterest() {
+
+	function showSelectedInterest(selectedInterests) {
 		//var container = $('#interest-input');
 		$('#button-select-interest').val(selectedInterests.toString());
 	}

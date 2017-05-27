@@ -2,7 +2,7 @@ var Backend = (function() {
 
   var url = "http://54.169.51.25/api/";
 
-  function getUserID(name, userEmail, type, id, ppURL, callback) {
+  function getUser(name, userEmail, type, id, ppURL, callback) {
   var req = new XMLHttpRequest();
   req.open('POST', url + "registerUser", true);
   req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -15,7 +15,7 @@ var Backend = (function() {
         if (req.status == 200) {
           console.log(req.response);
           var res = JSON.parse(req.response);
-          callback(res.user_id);
+          callback(res.user);
         }
       }    
     } 
@@ -224,9 +224,27 @@ function getInterests(callback) {
     }
 
 
+  function updateUserInterests(userID, interestList, callback) {
+    var req = new XMLHttpRequest();
+    req.open('POST', url + "registerInterests", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({user_id:userID, interests:interestList})); 
+    req.onreadystatechange = processRequest
+
+    function processRequest(e) {
+      if (req.readyState == 4 ) {
+        if (req.status == 200) {
+          callback(null);
+        } else {
+          callback("err");
+        } 
+      }    
+    } 
+  }
+
 
   return {
-    getUserID: getUserID,
+    getUser: getUser,
     getCards: getCards,
     getInterests: getInterests,
     getUserPictureCount: getUserPictureCount,
@@ -235,6 +253,7 @@ function getInterests(callback) {
     postBlogCard:postBlogCard,
     getBucketList:getBucketList,
     getUserPictures:getUserPictures,
+    updateUserInterests:updateUserInterests,
   }
 
    

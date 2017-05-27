@@ -1,15 +1,23 @@
 function onLogin (name, email, type, id, ppURL) {
   console.log('Logged in.' + ' name ' + name + ' email ' + email, + ' type ' + type + ' id ' + id + ' ppurl ' + ppURL);
 
-  Backend.getUserID(name, email, type, id, ppURL, function(id) {
-    console.log(id);
+  Backend.getUser(name, email, type, id, ppURL, function(user) {
+    //console.log(user);
+    var id = user._id;
     sessionStorage.setItem('isLogged','true');
     sessionStorage.setItem('userID', id);
-    window.location = "/index.html"; 
+    sessionStorage.setItem("user", JSON.stringify(user));
+    getMasterInterestList();
   });
 }
 
 
+function getMasterInterestList() {
+  Backend.getInterests(function(interestListString) {
+    sessionStorage.setItem('interestList', interestListString); //String
+    window.location = "/index.html"; 
+  })
+}
 
 
 
