@@ -311,6 +311,21 @@ footer {
 }
 
 
+
+
+#autocomplete {
+  /*border: none;
+  border-bottom: 2px solid red;
+  font-color: #000000;*/
+  float: left;
+  display: none;
+}
+
+#button-close-search {
+  display: none;
+}
+
+
 .important-opacity-1 {
     opacity: 1 !important;
 }

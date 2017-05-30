@@ -40,6 +40,17 @@
             </div>
 
             <ul class="nav navbar-nav navbar-right">
+
+                <li>
+                  <a><span id="search-button" class="glyphicon glyphicon-search"></span></a>
+                </li>
+                
+                <li>
+                  <a>
+                    <input id="autocomplete" type="text"></input>
+                    <span id="button-close-search" class="close">&times;</span>
+                  </a>
+                </li>
                 
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span></a>
@@ -49,7 +60,7 @@
                         <li><a id="button-user-interests">Interests</a></li>
                     </ul>
                 </li>
-                
+
             </ul>
         </div>
     </nav>
@@ -63,6 +74,8 @@
     <!--script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&callback=initMap">
     </script-->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&libraries=places"></script>
+    
     
 </head>
 

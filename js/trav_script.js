@@ -53,6 +53,15 @@ $(document).ready(function() {
   //Test in Local
   setupHomePage();
 
+
+
+  function setupAutoComplete() {
+    autocomplete = new google.maps.places.Autocomplete(
+          (document.getElementById('autocomplete')),
+          {types: ['geocode']});
+  }
+
+
   
   function updateUserInterests(selectedInterests) {
     Backend.updateUserInterests(userID, selectedInterests, function(err) {
@@ -125,6 +134,92 @@ $(document).ready(function() {
 
  
 
+  function populateCards() {
+    $('#update').empty();
+
+    var output = '';
+    $.each(cardsArray, function(k, v) {
+      console.log(v);
+      
+      if (v.card_type == 'photo') {
+        output =   '<div class="row">';
+        output +=   '<div class="col-md-4" >';
+        output +=   '</div>'
+        output +=   '<div class="col-md-4 travscapade">';
+        output +=     '<div class="user-content">';
+        output +=       '<img src="' + v.url + '" id="'+ v._id + '" class="travimage center-block" data-name="travimage" />';
+        output +=       '<div id="overlay_' + v._id + '" class="overlay-picture"></div>';
+        output +=       '<div id="location_' + v._id + '" value="' + v._id + '" class="location-text-picture"><p class="'+ v._id +'">'+ v.location +'</p></div>';
+        output +=     '</div>';
+        output +=     '<div class="buttons-div">'; 
+        output +=       '<p class="text-center">';
+        output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
+        output +=         '<span class="likes" id="likes_' + v._id + '">' + v.likes + '</span>';
+        output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
+        output +=         '<span id="bucket_count_' + v._id + '">' + v.bucket_count + '</span>';
+        output +=       '</p><br />';
+        output +=     '</div>';
+        output +=     '<div id="details" class="text-center">';
+        output +=       '<a id="travel-type">' + v.interests + '</a>';
+        output +=       '<a>' + v.user_name + '</a>';
+        output +=       '<a><img src="' + v.user_profile_pic + '"/></a>';
+        output +=     '</div>';
+        output +=     '<div id="description_' + v._id + '" class="picture-description"><p class="'+ v._id +'">'+ v.description +'</p></div>';
+        output +=   '</div>';
+        output +=   '<div class="col-md-4" >';
+        output +=   '</div>'
+        output +=  '</div>';
+
+        
+      } else if (v.card_type == "blog") {
+        output =  '<div class="row">';
+        output +=   '<div class="col-md-4" >';
+        output +=   '</div>'
+        output +=   '<div class="col-md-4 travscapade" >';
+        output +=     '<div class="blog-title"><p>' + v.title + '</p></div>';
+        output +=     '<div class="user-content">';
+        output +=       '<img src="' + v.thumbnail + '" id="'+ v._id + '" class="travimage" data-name="travimage" />';
+        output +=       '<div class="overlay-blog"></div>';
+        output +=       '<div class="blog-extract"><p>' + v.description + '</p></div>';
+        output +=     '</div>';
+        output +=     '<div id="location_' + v._id + '" class="location-text-blog"><p class="'+ v._id +'">'+ v.location +'</p></div>';
+        output +=     '<div class="buttons-div">'; 
+        output +=       '<p class="text-center">';
+        output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
+        output +=         '<span class="likes" id="likes_' + v._id + '">' + v.likes + '</span>';
+        output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
+        output +=         '<span id="bucket_count_' + v._id + '">' + v.bucket_count + '</span>';
+        output +=       '</p><br />';
+        output +=     '</div>';
+        output +=     '<div id="details">';
+        output +=       '<a id="travel-type-blog">' + v.interests + '</a><br>';
+        output +=       '<a>' + v.user_name + '</a>';
+        output +=       '<a><img src="' + v.user_profile_pic + '"/></a>';
+        output +=     '</div>';
+        output +=   '</div>';
+        output +=   '<div class="col-md-4" >';
+        output +=   '</div>'
+        output +=  '</div>';
+      }
+
+      $('#update').append(output);
+
+      if(v.is_liked == true){
+        onLike(v._id);
+      } 
+
+      if(v.is_bucket_listed == true){
+        console.log(v._id);
+        onBucketList(v._id);
+      }
+
+    });
+  }
+
+
+
+
+
 
 
   function setupHomePage() {
@@ -133,13 +228,19 @@ $(document).ready(function() {
     js_file.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&callback=initMap';
     document.getElementsByTagName('head')[0].appendChild(js_file);
 
+    setupAutoComplete();
+
     
     $('.kc_fab_wrapper').kc_fab(links);
 
 
-    Backend.getCards("589593bbac48cd73cb0811aa", 500, 500, function(data) {
+    //Backend.getCards("589593bbac48cd73cb0811aa", 500, 500, function(data) {
+    Backend.getCards(userID, 500, 500, function(data) {
+      cardsArray = data.cards;
+      populateCards();
+
     //Backend.getCards(userID, 500, 500, function(data) {
-      var output = '';
+      /*var output = '';
       cardsArray = data.cards;
       $.each(data.cards, function(k, v) {
         console.log(v);
@@ -157,9 +258,9 @@ $(document).ready(function() {
           output +=     '<div class="buttons-div">'; 
           output +=       '<p class="text-center">';
           output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
-          output +=         '<span class="likes">' + v.likes + '</span>';
+          output +=         '<span class="likes" id="likes_' + v._id + '">' + v.likes + '</span>';
           output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
-          output +=         '<span>' + v.bucket_count + '</span>';
+          output +=         '<span id="bucket_count_' + v._id + '">' + v.bucket_count + '</span>';
           output +=       '</p><br />';
           output +=     '</div>';
           output +=     '<div id="details" class="text-center">';
@@ -189,11 +290,9 @@ $(document).ready(function() {
           output +=     '<div class="buttons-div">'; 
           output +=       '<p class="text-center">';
           output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
-          //output +=         '<button class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
-          output +=         '<span class="likes">' + v.likes + '</span>';
+          output +=         '<span class="likes" id="likes_' + v._id + '">' + v.likes + '</span>';
           output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
-          //output +=         '<button class="glyphicon glyphicon-plus button-override" aria-hidden="true" id="plus"></button>';
-          output +=         '<span>' + v.bucket_count + '</span>';
+          output +=         '<span id="bucket_count_' + v._id + '">' + v.bucket_count + '</span>';
           output +=       '</p><br />';
           output +=     '</div>';
           output +=     '<div id="details">';
@@ -218,7 +317,7 @@ $(document).ready(function() {
           onBucketList(v._id);
         }
 
-      });
+      });*/
     });
   }
 
@@ -228,15 +327,21 @@ $(document).ready(function() {
   $(document).on("click", ".heart" , function() {
     //$(this).css("color","red");
     //$(this).css("-webkit-text-stroke", "0px");
-    var imageID = $(this).attr("value");
-    onLike(imageID);
+    var cardID = $(this).attr("value");
+    var cardIdx = getCardIdx(cardID);
+    cardsArray[cardIdx].likes++;
+    Backend.registerLikeCard(userID, cardID);
+    onLike(cardID);
   }); //like button (heart) function
 
 
 
   $(document).on("click", ".glyphicon-plus" , function() {
-    var imageID = $(this).attr("value");
-    onBucketList(imageID);
+    var cardID = $(this).attr("value");
+    var cardIdx = getCardIdx(cardID);
+    cardsArray[cardIdx].bucket_count++;
+    Backend.registerBucketCard(userID, cardID);
+    onBucketList(cardID);
   });
 
 
@@ -258,17 +363,22 @@ $(document).ready(function() {
 
 
 
-  function onLike(imageID) {
-    $('#like_button_'+imageID).css("color","red");
-    $('#like_button_'+imageID).css("-webkit-text-stroke", "0px");
-    $('#overlay_'+imageID).css("display", "block");
-    $('#location_'+imageID).css("display", "block");
-    $('#description_'+imageID).css("display", "block");
+  function onLike(cardID) {
+    $('#like_button_'+cardID).css("color","red");
+    $('#like_button_'+cardID).css("-webkit-text-stroke", "0px");
+    $('#like_button_'+cardID).prop('disabled', true);
+    $('#overlay_'+cardID).css("display", "block");
+    $('#location_'+cardID).css("display", "block");
+    $('#description_'+cardID).css("display", "block");
+    $('#likes_'+cardID).html(cardsArray[getCardIdx(cardID)].likes);
   }
 
-  function onBucketList(imageID) {
-    $('#bucket_button_'+imageID).css("color","red");
-    $('#bucket_button_'+imageID).css("-webkit-text-stroke", "0px");
+  function onBucketList(cardID) {
+    $('#bucket_button_'+cardID).css("color","red");
+    $('#bucket_button_'+cardID).css("-webkit-text-stroke", "0px");
+    $('#bucket_button_'+cardID).prop('disabled', true);
+    $('#bucket_count_'+cardID).html(cardsArray[getCardIdx(cardID)].bucket_count); 
+
   }
 
 
@@ -355,6 +465,40 @@ $(document).ready(function() {
 
 
 
+
+  $('#button-close-search').click(function() {
+    Backend.getCards(userID, 500, 500, function(data) {
+      cardsArray = data.cards;
+      populateCards();
+    });
+  }); 
+
+
+  //Search 
+  $('#search-button').click(function() {
+    if ($('#autocomplete').css('display') == 'none') {
+      $('#autocomplete').css('display', 'inline-block');
+      $('#button-close-search').css('display', 'inline-block');
+    } else {
+      var place = autocomplete.getPlace();
+      if (!place) {
+
+      } else {
+        console.log(place['formatted_address']);
+        var locationString = place['formatted_address'];
+        Backend.search(userID, locationString, function(err, data) {
+          console.log(data);
+          cardsArray = data.cards;
+          populateCards();
+        });
+        
+      }
+    }
+
+
+  }); 
+
+
   
 
   function getCard(cardID) {
@@ -366,6 +510,13 @@ $(document).ready(function() {
   }
 
 
+  function getCardIdx(cardID) {
+    for (var i=0; i<cardsArray.length;i++) {
+      if (cardsArray[i]._id == cardID) {
+        return i;
+      }
+    }
+  }
     
 }); //document ready
 

@@ -243,6 +243,65 @@ function getInterests(callback) {
   }
 
 
+  function registerLikeCard(userID, cardID) {
+    var req = new XMLHttpRequest();
+    req.open('POST', url + "likeCard", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({user_id:userID, card_id:cardID})); 
+    req.onreadystatechange = processRequest
+
+    function processRequest(e) {
+      if (req.readyState == 4 ) {
+        if (req.status == 200) {
+        } else {
+        } 
+      }    
+    } 
+  }
+
+
+
+  function registerBucketCard(userID, cardID) {
+    var req = new XMLHttpRequest();
+    req.open('POST', url + "addToBucket", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({user_id:userID, card_id:cardID})); 
+    req.onreadystatechange = processRequest
+
+    function processRequest(e) {
+      if (req.readyState == 4 ) {
+        if (req.status == 200) {
+        } else {
+        } 
+      }    
+    } 
+  }
+
+
+
+  function search(userID, locationString, callback) {
+    var req = new XMLHttpRequest();
+    req.open('POST', url + "search", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({user_id:userID, location:locationString})); 
+    req.onreadystatechange = processRequest
+
+    function processRequest(e) {
+      if (req.readyState == 4 ) {
+        if (req.status == 200) {
+          var res = JSON.parse(req.response);
+          callback(null, res);
+        } else {
+          callback(err);
+        } 
+      }    
+    } 
+  }
+
+  
+
+
+
   return {
     getUser: getUser,
     getCards: getCards,
@@ -254,6 +313,9 @@ function getInterests(callback) {
     getBucketList:getBucketList,
     getUserPictures:getUserPictures,
     updateUserInterests:updateUserInterests,
+    registerLikeCard:registerLikeCard,
+    registerBucketCard:registerBucketCard,
+    search:search,
   }
 
    
