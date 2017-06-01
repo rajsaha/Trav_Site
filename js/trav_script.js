@@ -362,6 +362,10 @@ $(document).ready(function() {
   });
 
 
+  $('#button-logout').click(function() {
+    window.location = "/signin.html?state=logout"; 
+  });
+
 
   function onLike(cardID) {
     $('#like_button_'+cardID).css("color","red");
@@ -467,6 +471,8 @@ $(document).ready(function() {
 
 
   $('#button-close-search').click(function() {
+    $('#autocomplete').css('display', 'none');
+    $('#button-close-search').css('display', 'none');
     Backend.getCards(userID, 500, 500, function(data) {
       cardsArray = data.cards;
       populateCards();

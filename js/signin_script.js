@@ -20,6 +20,19 @@ function getMasterInterestList() {
 }
 
 
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
 
 
 $(document).ready(function() {
@@ -28,6 +41,18 @@ $(document).ready(function() {
   /*getUserID("Hassan Ali Askari", "sunny_the_mastermind@hotmail.com", function(id) {
     console.log(id);
   });*/
+
+
+  var qParams = getUrlVars();
+  console.log(qParams['state']);
+
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.9&appId=495600770631539";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
 
 
   window.fbAsyncInit = function() {
@@ -39,21 +64,42 @@ $(document).ready(function() {
     FB.AppEvents.logPageView();
 
     FB.getLoginStatus(function(response) {
+      console.log(response);
       if (response.status === 'connected') {
-        sessionStorage.setItem('token', response.authResponse.accessToken);
-        FB.api('/me', {fields: 'name, email, id, picture'}, function(response) {
-            console.log(response);
-            onLogin(response.name, response.email, "fb", response.id, response.picture.data.url);
-        });
+        if (qParams['state'] == 'logout') {
+          console.log('logging out');
+          FB.logout(function(response) {
+            console.log('logged out');
+          });
+        } else {
+          sessionStorage.setItem('token', response.authResponse.accessToken);
+          FB.api('/me', {fields: 'name, email, id, picture'}, function(response) {
+              console.log(response);
+              onLogin(response.name, response.email, "fb", response.id, response.picture.data.url);
+          });
+        }
       }
-      else {
-        document.getElementById("fb-login-button").onclick = function () { 
-          FB.login(function(response) {
-            sessionStorage.setItem('token', response.authResponse.accessToken);
-            onLogin(response.name, response.email);
-          }, {scope: 'name, email, id, picture'}); 
-        };
-      }
+      //else {
+      $('#fb-login-button').click(function() {
+        console.log('login clicked');
+        FB.login(function(response){
+          console.log(response);  
+          sessionStorage.setItem('token', response.authResponse.accessToken);
+          FB.api('/me', {fields: 'name, email, id, picture'}, function(response) {
+              console.log(response);
+              onLogin(response.name, response.email, "fb", response.id, response.picture.data.url);
+          });
+        }, {scope: 'public_profile,email'});
+      });
+      /*$("#fb-login-button").click(function () { 
+        FB.login(function(response) {
+          console.log(response);
+          sessionStorage.setItem('token', response.authResponse.accessToken);
+          onLogin(response.name, response.email);
+        }, {scope: 'name, email, id, picture'}); 
+      });*/
+      //}
+    
     });
 
   };
