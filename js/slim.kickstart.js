@@ -4550,6 +4550,9 @@ var ImageEditor = function () {
 				// utils
 				this._utilsGroup = create('div', 'slim-editor-utils-group');
 
+                // aspect ratio
+                //this._ratioGroup = create('div', 'slim-editor-utils-group');
+
 				// create rotation button
 				var btn = create('button', 'slim-editor-utils-btn slim-btn-rotate' + (this._options.buttonRotateClassName ? ' ' + this._options.buttonRotateClassName : ''));
 				btn.setAttribute('data-action', 'rotate');
@@ -4557,11 +4560,37 @@ var ImageEditor = function () {
 				btn.title = this._options.buttonRotateTitle;
 				this._utilsGroup.appendChild(btn);
 
-				this._container.appendChild(this._wrapper);
+				
+                //create landscape ratio button
+                var btn1 = create('button', 'slim-editor-utils-btn slim-btn-landscape');
+                btn1.id = "slim-btn-landscape"; 
+                btn1.innerHTML = "Landscape";
+                btn1.setAttribute('data-action', 'landscape');
+                btn1.addEventListener('click', this);
+                this._utilsGroup.appendChild(btn1);
 
-				this._element.appendChild(this._container);
-				this._element.appendChild(this._utilsGroup);
-				this._element.appendChild(this._btnGroup);
+                //create square ratio button
+                var btn2 = create('button', 'slim-editor-utils-btn slim-btn-square');
+                btn2.id = "slim-btn-square";
+                btn2.innerHTML = "Square";
+                btn2.setAttribute('data-action', 'square');
+                btn2.addEventListener('click', this);
+                this._utilsGroup.appendChild(btn2);
+
+                
+                //create potrait ratio button
+                var btn3 = create('button', 'slim-editor-utils-btn slim-btn-potrait');
+                btn3.id = "slim-btn-potrait";
+                btn3.innerHTML = "Potrait";
+                btn3.setAttribute('data-action', 'potrait');
+                btn3.addEventListener('click', this);
+                this._utilsGroup.appendChild(btn3);
+
+                this._container.appendChild(this._wrapper);
+                this._element.appendChild(this._container);
+                //this._element.appendChild(this._ratioGroup);
+                this._element.appendChild(this._utilsGroup);
+                this._element.appendChild(this._btnGroup);
 			}
 		}, {
 			key: 'dirty',
@@ -4610,6 +4639,7 @@ var ImageEditor = function () {
 		}, {
 			key: '_onClick',
 			value: function _onClick(e) {
+                console.log("clicked");
 
 				if (e.target.classList.contains('slim-btn-cancel')) {
 					this._cancel();
@@ -4618,10 +4648,18 @@ var ImageEditor = function () {
 				if (e.target.classList.contains('slim-btn-confirm')) {
 					this._confirm();
 				}
-
 				if (e.target.classList.contains('slim-btn-rotate')) {
 					this._rotate();
 				}
+                if (e.target.classList.contains('slim-btn-landscape')) {
+                    this._landscape();
+                }
+                if (e.target.classList.contains('slim-btn-square')) {
+                    this._square();
+                }
+                if (e.target.classList.contains('slim-btn-potrait')) {
+                    this._potrait();
+                }
 			}
 		}, {
 			key: '_onResize',
@@ -4729,6 +4767,39 @@ var ImageEditor = function () {
 				}));
 			}
 		}, {
+            key: '_landscape',
+            value: function _landscape() {
+                this.ratio = 0.75;
+                this._ratio = 0.75;
+                this._cropper.ratio = 0.75;
+                this._redraw();
+                this._updateWrapperScale();
+                this._redrawCropper(null);
+                this._redrawCropMask();
+            }
+        }, {
+            key: '_square',
+            value: function _landscape() {
+                this.ratio = 1;
+                this._ratio = 1;
+                this._cropper.ratio = 1;
+                this._redraw();
+                this._updateWrapperScale();
+                this._redrawCropper(null);
+                this._redrawCropMask();
+            }
+        }, {
+            key: '_potrait',
+            value: function _landscape() {
+                this.ratio = 1.33;
+                this._ratio = 1.33;
+                this._cropper.ratio = 1.33;
+                this._redraw();
+                this._updateWrapperScale();
+                this._redrawCropper(null);
+                this._redrawCropMask();
+            }
+        }, {
 			key: '_rotate',
 			value: function _rotate() {
 				var _this3 = this;
@@ -4802,9 +4873,11 @@ var ImageEditor = function () {
 					width: this._wrapper.offsetWidth,
 					height: this._wrapper.offsetHeight
 				};
+                //console.log(canvas);
 
 				// get default mask cropper area
 				var mask = this._cropper.area;
+                //console.log(mask);
 				var preview = {
 					x: 0,
 					y: 0

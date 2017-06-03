@@ -8,13 +8,26 @@ $(document).ready(function() {
 
 
     var cropper = new Slim(document.getElementById('myCropper'), {
-        ratio: '1:1',
+        ratio: '4:3',
         instantEdit: false,
         label: 'Drop your image here.',
         buttonConfirmLabel: 'Ok',
+        didConfirm: updateImage,
     });
 
+    function updateImage(data) {
+        var imgURL = cropper.data.output.image.toDataURL("image/png");
+        cropper.ratio = 'input';
+        cropper.load(imgURL, function(error, data){
+            if(error) {
+                console.log(error);
+            } else {
+                console.log('loading done');
 
+            }
+        }); 
+    }
+    
 
 
     var appId = '495600770631539';
