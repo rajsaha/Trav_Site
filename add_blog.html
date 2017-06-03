@@ -10,11 +10,22 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Interest Select Modal -->
     <link href="css/modal-interest-select.css" rel="stylesheet">
+    <!-- Loader -->
+    <link href="css/loader.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600" rel="stylesheet" />
+
+    <link href="css/add_blog.css" rel="stylesheet">
     
   </head>
   
 
   <body>
+
+    <section id="loading-screen">
+      <div class="loader"></div>
+    </section>
 
     <section>
       <div id="select-interest-modal" class="modal">
@@ -40,21 +51,37 @@
           </div>
           
           <div class="col-md-4">
-          	<div id="title"></div> 
-          	<img id="thumbnail" style="width:100%; display:none;"></img>
-            <div id="extract"></div> 
-            Enter URL<br>
-          	<input id="blog-url" type="text"></input>
-            <button id="preview-button">Preview</button><br>
-            <div id="location-input" style="display:none;">
+            <div id="preview">
+            	<div id="title"></div> 
+            	<img id="thumbnail"></img>
+              <div id="extract"></div> 
+            </div>
+
+            <div class="input-group" id="url-input-group">
+              <input type="text" id="blog-url" class="m-input center-block">
+              <label for="blog-url">Enter Blog URL</label>
+              <button id="preview-button">Preview</button><br>
+            </div>
+            
+            <div class="input-group" id="location-input">
+              <input type="text" id="autocomplete" class="m-input center-block" placeholder="">
+              <label for="blog-url">Location</label>
+            </div>
+            <!--div id="location-input" style="display:none;">
             	Location:<br>
             	<input id="autocomplete" type="text"></input><br>
+            </div-->
+
+            <div class="input-group" id="interest-input">
+              <input type="text" id="button-select-interest" class="m-input center-block">
+              <label for="blog-url">Enter Upto 3 Interests</label>
             </div>
-            <div id="interest-input" style="display:none;">
+            <!--div id="interest-input" style="display:none;">
             	Interest:<br>
             	<input type='text' id="button-select-interest" ></button>
-            </div>
-            <button id="upload-button" style="display:none;">Upload</button>
+            </div-->
+
+            <button id="upload-button">Upload</button>
           </div>
 
           <div class="col-md-4">

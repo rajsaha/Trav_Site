@@ -5,7 +5,65 @@ $(document).ready(function() {
 	var blogUrl;
 	var thumbnailUrl;
 	var blogExtract;
+	var interests = [];
 
+
+
+	function leaveInput(el) {
+		console.log("lost focus");
+		console.log(el.value);
+		if (el.value.length > 0) {
+			if (!el.classList.contains('active')) {
+					el.classList.add('active');
+			}
+		} else {
+			if (el.classList.contains('active')) {
+					el.classList.remove('active');
+			}
+		}
+	}
+
+	var inputs = document.getElementsByClassName("m-input");
+	for (var i = 0; i < inputs.length; i++) {
+		var el = inputs[i];
+		el.addEventListener("blur", function() {
+			leaveInput(this);
+		});
+	}
+
+	/*function leaveInput(el) {
+		console.log("Unfocusing");
+		if (el.val().length > 0) {
+			if (!el.hasClass('active')) {
+					el.addClass('active');
+			}
+		} else {
+			if (el.hasClass('active')) {
+					el.removeClass('active');
+			}
+		}
+	}
+
+	var inputs = $(".m-input");
+	console.log(inputs);
+
+	$('.m-input').each(function(idx, element) {
+		console.log(element);
+		element.blur(function(){
+    		console.log ("This input field has lost its focus.");
+		});
+		//element.focusout(leaveInput($(this)));
+	});*/
+
+
+	function showLoader() {
+		$('#loading-screen').css('display', 'block');
+	}
+
+	function hideLoader() {
+		$('#loading-screen').css('display', 'none');
+	}
+	
 
 	$('#preview-button').click(function() {
 
@@ -14,6 +72,7 @@ $(document).ready(function() {
 		if(!blogUrl) {
 			window.alert("Enter URL");
 		} else {
+			showLoader();
 			Backend.getLinkPreview(blogUrl, function(err, info) {
 				if(err) {
 					console.log(err);
@@ -23,13 +82,15 @@ $(document).ready(function() {
 					blogTitle = info.title;
 					thumbnailUrl = info.image;
 					blogExtract = info.extract;
+					$('#url-input-group').css('display', 'none');
+					$('#preview').css('display', 'block');
 					$('#title').html(info.title);
 					$('#extract').html(info.extract);
 					$('#location-input').css('display', 'block');
 					$('#interest-input').css('display', 'block');
 					$('#upload-button').css('display', 'block');
 					$('#thumbnail').attr('src', info.image);
-					$('#thumbnail').css('display', 'block');
+					//$('#thumbnail').css('display', 'block');
 
 					autocomplete = new google.maps.places.Autocomplete(
 					        (document.getElementById('autocomplete')),
@@ -40,6 +101,7 @@ $(document).ready(function() {
 					}) 
 					
 				}
+				hideLoader();
 			});
 		}
 
@@ -48,7 +110,10 @@ $(document).ready(function() {
 
 
 
-	$('#interest-input').click(function() {
+	$('#button-select-interest').click(function() {
+		$('#button-select-interest').attr('value', 'Select');	
+		$('#button-select-interest').blur();	
+		$('#button-select-interest').trigger("blur");	
 		openInterestSeletion(null, onInterestSelected);
 	});
 
@@ -106,6 +171,7 @@ $(document).ready(function() {
 	function onInterestSelected(selectedInterests) {
 		console.log(selectedInterests);
 		showSelectedInterest(selectedInterests);
+		interests = selectedInterests;
 		closeInterestSeletion();
 	}
 
@@ -113,6 +179,9 @@ $(document).ready(function() {
 	function showSelectedInterest(selectedInterests) {
 		//var container = $('#interest-input');
 		$('#button-select-interest').val(selectedInterests.toString());
+		if(selectedInterests.length > 0) {
+			$('#button-select-interest').addClass('active');
+		}
 	}
 
 
@@ -124,7 +193,7 @@ $(document).ready(function() {
             return;    
         }
 
-        if((selectedInterests).length == 0){
+        if((interests).length == 0){
             window.alert("Interest Not Selected");
             return;
         }
@@ -137,7 +206,7 @@ $(document).ready(function() {
         var lng = place.geometry.location.lng();
 
         console.log(blogUrl);
-        Backend.postBlogCard(userID, blogUrl, blogTitle, blogExtract, thumbnailUrl, selectedInterests, place.id, locationString, lat, lng, function() {
+        Backend.postBlogCard(userID, blogUrl, blogTitle, blogExtract, thumbnailUrl, interests, place.id, locationString, lat, lng, function() {
         	window.location = "/index.html";
         })
 
