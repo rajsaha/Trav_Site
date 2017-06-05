@@ -16,6 +16,8 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600" rel="stylesheet" />
 
+    <link href="css/input.css" rel="stylesheet">
+
     <link href="css/add_blog.css" rel="stylesheet">
     
   </head>
@@ -27,22 +29,18 @@
       <div class="loader"></div>
     </section>
 
-    <section>
-      <div id="select-interest-modal" class="modal">
 
-        <!-- Modal content -->
-        <div class="modal-content">
-          <span id="button-close-modal" class="close">&times;</span>
-          Please select upto 3 interests.
-          <div id="interest-list">
-          </div>
-        </div>
-
-
-      </div>
-
-    </section>
-
+   <section>
+     <div id="select-interest-modal" class="modal">
+       <!-- Modal content -->
+       <div class="modal-content">
+         <span id="button-close-modal" class="close">&times;</span>
+         <div class="select-interest-heading"> Please select an interest.</div>
+         <div id="interest-list">
+         </div>
+       </div>
+     </div>
+   </section>
 
     <section>
       <div class="container">
@@ -65,7 +63,7 @@
             
             <div class="input-group" id="location-input">
               <input type="text" id="autocomplete" class="m-input center-block" placeholder="">
-              <label for="blog-url">Location</label>
+              <label for="autocomplete">Location</label>
             </div>
             <!--div id="location-input" style="display:none;">
             	Location:<br>
@@ -74,7 +72,7 @@
 
             <div class="input-group" id="interest-input">
               <input type="text" id="button-select-interest" class="m-input center-block">
-              <label for="blog-url">Enter Upto 3 Interests</label>
+              <label for="button-select-interest">Enter Upto 3 Interests</label>
             </div>
             <!--div id="interest-input" style="display:none;">
             	Interest:<br>
@@ -102,7 +100,9 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&libraries=places"></script>
     <!-- Backend -->
     <script src="js/backend.js"></script>    
-
+    <!-- Interest Select -->
+    <script src="js/interest-selection.js"></script>   
+    
     <script src="js/add_blog.js"></script>    
 
   </body>

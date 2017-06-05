@@ -1,3 +1,7 @@
+/* Primary color #2c92d0 */
+/* Secondary Color #f27f22 */
+
+
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
@@ -14,24 +18,112 @@
 
 /* Modal Content/Box */
 .modal-content {
-    background-color: #fefefe;
+    width: 50em;
     margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    background-color: rgba(0, 0, 0, 0);
 }
+
+.select-interest-heading {
+    width: 100%;
+    padding: 1em 2em;
+    background-color: rgba(44, 146, 208, 0.95)
+}
+
+
+#interest-list {
+    background-color: rgba(44, 146, 208, 0.8);
+    padding-bottom: 3em;
+}
+
+
+#interest-list button {
+    float: right; 
+}
+
+.interest-item {
+    position: relative;
+    display:inline-block;
+    width: 100%;
+    padding: 1em 2em;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.interest-item:hover {
+     background-color: rgba(44, 146, 208, 0.9);
+}
+
+.interest-item span {
+    pointer-events: none;
+}
+
 
 /* The Close Button */
 .close {
-    color: #aaa;
-    float: right;
+    position: absolute;
+    top: 0.5em;
+    right:0.5em;
+    color: black;
     font-size: 28px;
     font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #444444;
     text-decoration: none;
     cursor: pointer;
+}
+
+
+
+/* Checkboxes */
+
+input[type='checkbox']{
+  display:none;
+}
+
+
+
+input[type='checkbox'] + label{
+  z-index:15;
+  position:absolute;
+  left:2em;
+  top:1em;
+  -webkit-transition: all .3s ease;
+          transition: all .3s ease;
+  cursor:pointer;
+  width:20px;
+  border: 4px solid #444;
+  height:20px;
+}
+
+.tag {
+  margin-left:40px;
+}
+
+input[type='checkbox']:checked + label{
+
+  -webkit-transition: all .3s ease;
+
+          transition: all .3s ease;
+  display:inline-block;
+  width:20px;
+  height:20px;
+  border-top-color:transparent;
+  border-right-color:transparent;
+  border-bottom-color:#f27f22;
+  border-left-color:transparent;
+transform:rotate(-50deg) translate(5px,-9px);
+}
+
+input[type='checkbox']:checked + label:before {
+  content: "";
+  position: absolute;
+  right: 5px;
+  bottom: -3px;
+  height: 10px;
+  width: 100%;  /* or 100px */
+  border-left:4px solid #f27f22;
 }

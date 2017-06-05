@@ -97,7 +97,7 @@ $(document).ready(function() {
 					        {types: ['geocode']});
 
 					$('#interest-input').click(function() {
-						openInterestSeletion(null, onInterestSelected);
+						openInterestSeletion(null, 3, onInterestSelected);
 					}) 
 					
 				}
@@ -114,19 +114,19 @@ $(document).ready(function() {
 		$('#button-select-interest').attr('value', 'Select');	
 		$('#button-select-interest').blur();	
 		$('#button-select-interest').trigger("blur");	
-		openInterestSeletion(null, onInterestSelected);
+		openInterestSeletion(null, 3, onInterestSelected);
 	});
 
 
 
-	function closeInterestSeletion() {
+	/*function closeInterestSeletion() {
 		//selectedInterests = [];
 		//$('#interest-list').empty();
 		$('#select-interest-modal').css('display', 'none');
-	}
+	}*/
 	
 
-	var interestsShown = false;
+	/*var interestsShown = false;
 
 	function openInterestSeletion(preSelectedInterests, callback) {
 		var selectedInterests = [];
@@ -166,7 +166,7 @@ $(document).ready(function() {
 		});
 			
 		
-	}
+	}*/
 
 	function onInterestSelected(selectedInterests) {
 		console.log(selectedInterests);
@@ -177,12 +177,15 @@ $(document).ready(function() {
 
 
 	function showSelectedInterest(selectedInterests) {
-		//var container = $('#interest-input');
-		$('#button-select-interest').val(selectedInterests.toString());
-		if(selectedInterests.length > 0) {
-			$('#button-select-interest').addClass('active');
-		}
-	}
+	     if(selectedInterests.length > 0) {
+	         $('#button-select-interest').val(selectedInterests.join(', '));
+	         $('#button-select-interest').addClass('active');
+	     } else {
+	         $('#button-select-interest').val("");
+	         $('#button-select-interest').removeClass('active');
+	     }
+	 }
+
 
 
 

@@ -11,11 +11,42 @@
 
     <!-- Slim Cropper -->
     <link rel="stylesheet" href="css/slim.css" />
+
+     <!-- Loader -->
+    <link href="css/loader.css" rel="stylesheet">
+
+    <!-- Interest Select Modal -->
+    <link href="css/modal-interest-select.css" rel="stylesheet">
+
+
+    <link href="css/input.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600" rel="stylesheet" />
+
+    <link rel="stylesheet" href="css/add_picture.css">
     
   </head>
   
 
   <body>
+
+    <section id="loading-screen">
+      <div class="loader"></div>
+    </section>
+
+    <section>
+      <div id="select-interest-modal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span id="button-close-modal" class="close">&times;</span>
+          <div class="select-interest-heading"> Please select an interest.</div>
+          <div id="interest-list">
+          </div>
+        </div>
+      </div>
+    </section>
+
 
     <section id="picture">
       <div class="container">
@@ -43,14 +74,38 @@
           </div>
           
           <div class="col-md-4">
-            <form>
-              Name:<br>
+            <div class="input-group" id="title-input-group">
+              <input type="text" id="heading" class="m-input center-block">
+              <label for="heading">Enter a Title</label>
+            </div>
+
+            <div class="input-group" id="location-input">
+              <input type="text" id="autocomplete" class="m-input center-block" placeholder="">
+              <label for="autocomplete">Location</label>
+            </div>
+
+            <div class="input-group" id="interest-input">
+              <input type="text" id="button-select-interest" class="m-input center-block">
+              <label for="button-select-interest">Enter 1 Interest</label>
+            </div>
+
+            <div class="input-group" id="description-input-group">
+              <input type="text" id="description" class="m-input center-block">
+              <label for="description">Enter a Short Descrtion</label>
+            </div>
+
+
+            <!--form>
               <input id="heading" type="text" name="title"><br>
-              Description:<br>
               <input id="description" type="text" name="description"><br>
-              <!--input id="submit-button" type="submit" value="Upload"-->
+              <input id="submit-button" type="submit" value="Upload">
             </form>
-            </select><br>
+            </select><br-->
+
+             <!--input id="autocomplete" type="text"></input><br> 
+             Interest:<br>
+             <select id="interest-list">
+             </select><br-->
 
             <button id="submit-button">Upload</button>
           </div>
@@ -80,6 +135,7 @@
     <!-- Backend -->
     <script src="js/backend.js"></script>    
 
+    <script src="js/interest-selection.js"></script>
     <script src="js/add_picture.js"></script>    
 
   </body>

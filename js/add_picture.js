@@ -1,10 +1,10 @@
 $(document).ready(function() {
 
 
-
     var token = sessionStorage.getItem('token');
     var userID = sessionStorage.getItem('userID');
 
+    var interest;
 
 
     var cropper = new Slim(document.getElementById('myCropper'), {
@@ -26,6 +26,28 @@ $(document).ready(function() {
 
             }
         }); 
+    }
+
+    function leaveInput(el) {
+        console.log("lost focus");
+        console.log(el.value);
+        if (el.value.length > 0) {
+            if (!el.classList.contains('active')) {
+                    el.classList.add('active');
+            }
+        } else {
+            if (el.classList.contains('active')) {
+                    el.classList.remove('active');
+            }
+        }
+    }
+
+    var inputs = document.getElementsByClassName("m-input");
+    for (var i = 0; i < inputs.length; i++) {
+        var el = inputs[i];
+        el.addEventListener("blur", function() {
+            leaveInput(this);
+        });
     }
     
 
@@ -58,8 +80,43 @@ $(document).ready(function() {
 
 
 
+    //Interest List
+    $('#button-select-interest').click(function() {
+        $('#button-select-interest').attr('value', 'Select');   
+        openInterestSeletion(null, 1, onInterestSelected);
+    });
+
+
+    function onInterestSelected(selectedInterests) {
+        console.log(selectedInterests);
+        showSelectedInterest(selectedInterests);
+        interest = selectedInterests[0];
+        closeInterestSeletion();
+    }
+
+   function showSelectedInterest(selectedInterests) {
+        if(selectedInterests.length > 0) {
+            $('#button-select-interest').val(selectedInterests.join(', '));
+            $('#button-select-interest').addClass('active');
+        } else {
+            $('#button-select-interest').val("");
+            $('#button-select-interest').removeClass('active');
+        }
+    }
+
+
+
+    function showLoader() {
+        console.log("showing laoder");
+        $('#loading-screen').css('display', 'block');
+    }
+
+    function hideLoader() {
+        $('#loading-screen').css('display', 'none');
+    }
+    
     //var interestList = ['Hiking', 'Cycling', 'Diving'];
-    var test = JSON.parse(sessionStorage.getItem('interestList'))['interests'];
+    /*var test = JSON.parse(sessionStorage.getItem('interestList'))['interests'];
     console.log(typeof test);
     console.log(test);
     
@@ -71,7 +128,7 @@ $(document).ready(function() {
         option.innerHTML = element.interest;
         selectInterest.appendChild(option);
     });
-    selectInterest.selectedIndex = -1;
+    selectInterest.selectedIndex = -1;*/
     
 
     var pictureIdx = -1;
@@ -92,10 +149,13 @@ $(document).ready(function() {
             return;    
         }
 
-        if((selectInterest).selectedIndex == -1){
+        //if((selectInterest).selectedIndex == -1){
+        if(!interest) { 
             window.alert("Interest Not Selected");
             return;
         }
+
+        showLoader();
 
 
         //Get Image file
@@ -108,6 +168,7 @@ $(document).ready(function() {
         var file = new Blob( [arr], {type: 'image/png'} );    
 
         if (!file) {
+            hideLoader();
             window.alert("Error Reading Image");
             return;
         } 
@@ -115,6 +176,7 @@ $(document).ready(function() {
        
         Backend.getUserPictureCount(userID, function(err, count) {
             if(err) {
+                hideLoader();
                 window.alert("Cannot Connect to Server");
                 return;
             } else {
@@ -122,6 +184,7 @@ $(document).ready(function() {
                 pictureIdx = count;
                 uploadToS3 (pictureIdx, file, function(err) {
                     if(err) {
+                        hideLoader();
                         window.alert("Failed To Upload");
                         return;
                     } else {
@@ -157,7 +220,7 @@ $(document).ready(function() {
 
 
     function postPictureCard() {
-        var interest = selectInterest.options[selectInterest.selectedIndex].value;
+        //var interest = selectInterest.options[selectInterest.selectedIndex].value;
         var description = document.getElementById('description').value;
         var heading = document.getElementById('heading').value;
         var place = autocomplete.getPlace();
@@ -169,6 +232,7 @@ $(document).ready(function() {
         console.log(userID + "\n" + pictureUrl + "\n" + heading + "\n" + place.id + "\n" + locationString + "\n" + place.geometry.location.lat() + "\n" + place.geometry.location.lng() + "\n" + interest + "\n" + description);
 
         Backend.postPictureCard(userID, pictureUrl, heading, place.id, locationString, place.geometry.location.lat(), place.geometry.location.lng(), interest, description, function() {
+            hideLoader();
             console.log("Successfully Posted Picture");
             window.location = "/index.html";
         });
