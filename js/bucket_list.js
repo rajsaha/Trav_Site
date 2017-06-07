@@ -1,5 +1,6 @@
 var map;
 var markers = [];
+var selectedMarker;
 
 $(document).ready(function() {
 
@@ -40,9 +41,26 @@ $(document).ready(function() {
 	function addCallbacks() {
 		$('.list-element').click(function() {
 			var idx = $(this).attr('value');
+			/*var len = $('.list-element').length;
+			for(var i=0;i<len;i++) {
+				if (i<idx) {
+					$("#country-list li").eq(0).remove();
+				} else if (i>idx) {
+					$("#country-list li").eq(1).remove();
+				}
+			}*/
 			showBucketListOfCountry(bucketList[idx]);
 
 		});
+	}
+
+	var defaultIcon = {
+		url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+	};
+
+	var selectedIcon = {
+		url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+		//scaledSize: new google.maps.Size(48,48), 
 	}
 
 	function showBucketListOfCountry(bucketListElement) {
@@ -53,42 +71,68 @@ $(document).ready(function() {
 
 		$('#country-name').html(bucketListElement.name);
 
-
 		google.maps.event.trigger(map, "resize");
 		//if(marker)
 		  //marker.setMap(null);
 
 		var bounds = new google.maps.LatLngBounds();
 		for (var i=0; i<cards.length; i++) {
-			markers.push({lat: cards[i].latitude, lng: cards[i].longitude});
+			//markers.push({lat: cards[i].latitude, lng: cards[i].longitude});
+			if (findMarker(cards[i].latitude, cards[i].longitude)) {
+				continue;
+			}
+			coord = {lat: cards[i].latitude, lng: cards[i].longitude};
 			marker = new google.maps.Marker({
-		  		position: markers[i],
-		  		map: map
+		  		position: coord,
+		  		map: map,
+		  		icon: defaultIcon,
 			});
-			bounds.extend(markers[i]);
+			markers.push(marker);
+			bounds.extend(coord);
 			map.setZoom(map.getZoom() - 1);
 		}  
 		map.fitBounds(bounds);
+		console.log(markers.length);		
+
 		
 
-		var pictureCards = $('#picture-cards');
-		pictureCards.css('display', 'block');
-		var pictureCardsList = $('#picture-cards-list');
-		cards.forEach(function(card) {
-			if (card.card_type == "photo") {
-				var listItem = $('<li/>');
-				//var listItem.addClass('pictureItem');
-				var img = $('<img/>').attr('src', card.url);
-				//img.addClass('image');	
-				img.appendTo(listItem);
-				img.addClass('img-responsive');
-				img.addClass('img-thumbnail');
-				listItem.appendTo(pictureCardsList);
+
+		function findMarker(latitude, longitude) {
+			console.log(latitude, longitude);
+			for (var i=0;i<markers.length;i++) {
+				if(markers[i].position) {
+					console.log(markers[i].position.lat() + " " + markers[i].position.lng());
+					if(Math.abs(markers[i].position.lat() - latitude) < 0.0001 && Math.abs(markers[i].position.lng() - longitude) < 0.0001 ) {
+						return markers[i];
+					}
+				}
 			}
-		});
+		}
 
 
-		pictureCards.sly({
+		
+
+		function photoActivateCallback(eventName, idx) {
+			if(selectedMarker) {
+				selectedMarker.setIcon(defaultIcon);
+			}
+			marker = findMarker(pictureCardsArr[idx].latitude, pictureCardsArr[idx].longitude);
+			marker.setIcon(selectedIcon);
+			selectedMarker = marker;
+			//marker.setAnimation(google.maps.Animation.BOUNCE);
+		}
+
+		function blogActivateCallback(eventName, idx) {
+			if(selectedMarker) {
+				selectedMarker.setIcon(defaultIcon);
+			}
+			marker = findMarker(blogCardsArr[idx].latitude, blogCardsArr[idx].longitude);
+			marker.setIcon(selectedIcon);
+			selectedMarker = marker;
+		}
+
+
+		var options = {
 		    horizontal: 1,
 		    itemNav: 'basic',
 		    smart: 1,
@@ -99,9 +143,40 @@ $(document).ready(function() {
 		    startAt: 0,
 		    speed: 300,
 		    elasticBounds: 1,
+		    activeClass: 'active-element', 
 		    next: $('#picture-cards-next'),
 			prev: $('#picture-cards-prev'),
-		  });
+		};
+
+
+		var pictureCardsArr = [];
+		var blogCardsArr = [];
+
+
+		var pictureCards = $('#picture-cards');
+		pictureCards.css('display', 'block');
+		var pictureCardsList = $('#picture-cards-list');
+		cards.forEach(function(card) {
+			if (card.card_type == "photo") {
+				pictureCardsArr.push(card);
+				var listItem = $('<li/>');
+				var img = $('<img/>').attr('src', card.url);
+				if(card.picture_width > card.picture_height) {
+					img.css('height', '100%');
+				} else {
+					img.css('width', '100%');
+				}
+				img.addClass('img-responsive');
+				img.appendTo(listItem);
+				listItem.appendTo(pictureCardsList);
+			}
+		});
+
+
+		var frame1 = new Sly('#picture-cards', options, {
+			active: photoActivateCallback,
+		}).init();
+
 		
 
 		var blogCards = $('#blog-cards');
@@ -109,19 +184,35 @@ $(document).ready(function() {
 		var blogCardsList = $('#blog-cards-list');
 		cards.forEach(function(card) {
 			if (card.card_type == "blog") {
+				blogCardsArr.push(card);
 				console.log('blog');
 				var listItem = $('<li/>');
-				//var listItem.addClass('pictureItem');
 				var img = $('<img/>').attr('src', card.thumbnail);
-				//img.addClass('image');	
-				img.appendTo(listItem);
+				if(card.picture_width > card.picture_height) {
+					img.css('height', '100%');
+				} else {
+					img.css('width', '100%');
+				}
 				img.addClass('img-responsive');
-				img.addClass('img-thumbnail');
+				img.appendTo(listItem);
+				var title = $('<div/>');
+				title.addClass('blog-title')
+				title.css('position', 'absolute');
+				title.css('width', '100%');
+				title.css('height', '100%');
+				//title.css('background', 'rgba(0,0,0,0.4)');
+				$('<p/>', {text: card.title}).appendTo(title);
+				title.appendTo(listItem);	
 				listItem.appendTo(blogCardsList);
 			}
 		});
 
-		blogCards.sly({
+		var frame2 = new Sly('#blog-cards', options, {
+			active: blogActivateCallback,
+		}).init();
+
+
+		/*blogCards.sly({
 		   horizontal: 1,
 		    itemNav: 'basic',
 		    smart: 1,
@@ -134,7 +225,7 @@ $(document).ready(function() {
 		    elasticBounds: 1,
 		    next: $('#blog-cards-next'),
 			prev: $('#blog-cards-prev'),
-		 });
+		 });*/
 
 		
 
