@@ -20,7 +20,7 @@ $(document).ready(function() {
 			window.alert("Could not Fetch Bucket List");
 		} else {
 			if(data.length == 0) {
-				//Empty State
+				$('#empty-page').css('display', 'block');
 			} else {
 				bucketList = data;
 				var list = $('#country-list');
@@ -91,10 +91,15 @@ $(document).ready(function() {
 			bounds.extend(coord);
 			map.setZoom(map.getZoom() - 1);
 		}  
-		map.fitBounds(bounds);
 		console.log(markers.length);		
 
 		
+		if(markers.length == 1) {
+			map.setCenter({lat: markers[0].position.lat(), lng: markers[0].position.lng()});
+			map.setZoom(4);
+		} else {
+			map.fitBounds(bounds);
+		}
 
 
 		function findMarker(latitude, longitude) {
@@ -132,7 +137,7 @@ $(document).ready(function() {
 		}
 
 
-		var options = {
+		var options_picture = {
 		    horizontal: 1,
 		    itemNav: 'basic',
 		    smart: 1,
@@ -148,6 +153,22 @@ $(document).ready(function() {
 			prev: $('#picture-cards-prev'),
 		};
 
+
+		var options_blog = {
+		    horizontal: 1,
+		    itemNav: 'basic',
+		    smart: 1,
+		    activateOn: 'click',
+		    mouseDragging: 1,
+		    touchDragging: 1,
+		    releaseSwing: 1,
+		    startAt: 0,
+		    speed: 300,
+		    elasticBounds: 1,
+		    activeClass: 'active-element', 
+		    next: $('#blog-cards-next'),
+			prev: $('#blog-cards-prev'),
+		};
 
 		var pictureCardsArr = [];
 		var blogCardsArr = [];
@@ -173,10 +194,26 @@ $(document).ready(function() {
 		});
 
 
-		var frame1 = new Sly('#picture-cards', options, {
+		var frame1 = new Sly('#picture-cards', options_picture, {
 			active: photoActivateCallback,
 		}).init();
 
+		if (pictureCardsArr.length == 0) {
+			$('#picture-cards-next').css('display', 'none');
+			$('#picture-cards-prev').css('display', 'none');
+			var container = $('#picture-cards');
+			container.addClass('empty');
+			var msg = $('<p/>', {text: "No Photos in Bucket List"});
+			msg.css('font-size', '2em');
+			msg.appendTo(container);
+		}
+
+		/*function emptyStateMessage(container, msg) {
+			container.addClass('empty');
+			var msg = $('<p/>', {text: msg});
+			msg.css('font-size', '2em');
+			msg.appendTo(container);
+		}*/
 		
 
 		var blogCards = $('#blog-cards');
@@ -207,10 +244,21 @@ $(document).ready(function() {
 			}
 		});
 
-		var frame2 = new Sly('#blog-cards', options, {
+		var frame2 = new Sly('#blog-cards', options_blog, {
 			active: blogActivateCallback,
 		}).init();
 
+		if (blogCardsArr.length == 0) {
+			console.log("empty");
+			console.log($('#blog-cards-next').css('display'));
+			$('#blog-cards-next').css('display', 'none');
+			$('#blog-cards-prev').css('display', 'none');
+			var container = $('#blog-cards');
+			container.addClass('empty');
+			var msg = $('<p/>', {text: "No Blogs in Bucket List"});
+			msg.css('font-size', '2em');
+			msg.appendTo(container);
+		}
 
 		/*blogCards.sly({
 		   horizontal: 1,
