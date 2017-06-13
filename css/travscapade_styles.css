@@ -1,3 +1,8 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 /* Bootstrap Classes */
 
 nav.navbar.navbar-default {
@@ -18,21 +23,29 @@ nav.navbar.navbar-default {
 
 
 /* ----------------- */
-
 body {
-    /*font-family: 'Roboto', sans-serif;*/
     background-color: #EFEBE9 none repeat scroll 0 0;
     margin-top: 0;
-    position: relative;
+    margin-bottom: 60px;
+    font-family:'Titillium Web', sans-serif;
 }
 
-footer {
-    background-color: #f5f5f5;
-    bottom: -100px;
-    height: 60px;
+.footer {
     position: absolute;
+    bottom: 0;
     width: 100%;
-    border-top: 2px solid #e7e7e7;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #f5f5f5;
+    margin-top:25px;
+}
+
+.footer p {
+    margin-top: 20px;
+}
+
+.text-muted {
+    color:#9E9E9E;
 }
 
 
@@ -484,68 +497,66 @@ footer {
   margin-top:35px;
 }
 
-input, select, textarea{
-    color: #ff0000;
-}
+/*input, select, textarea{*/
+    /*color: #ff0000;*/
+/*}*/
 
-textarea:focus, input:focus {
-    color: #ff0000;
-}
-
-
-input[type=text] {
-    border: none;
-    border-bottom: 1px solid white;
-    background-color: transparent;
-    box-shadow: none;
-}
-
-input[type=text]:focus {
-  box-shadow: none;
-  border-bottom: 2px solid rgba(99,20,32,0.5);
-}
+/*textarea:focus, input:focus {*/
+    /*color: #ff0000;*/
+/*}*/
 
 
-input[type=password] {
-    border: none;
-    border-bottom: 1px solid white;
-    background-color: transparent;
-    box-shadow: none;
-}
+/*input[type=text] {*/
+    /*border: none;*/
+    /*border-bottom: 1px solid white;*/
+    /*background-color: transparent;*/
+    /*box-shadow: none;*/
+/*}*/
 
-input[type=password]:focus {
-  box-shadow: none;
-  border-bottom: 2px solid rgba(99,20,32,0.5);
-}
+/*input[type=text]:focus {*/
+  /*box-shadow: none;*/
+  /*border-bottom: 2px solid rgba(99,20,32,0.5);*/
+/*}*/
 
-input[type=text]::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color:white;
-    transition: font-size 0.2s ease-out;
-}
 
-input[type=text]:focus::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    font-size: 0.8em;
-}
+/*input[type=password] {*/
+    /*border: none;*/
+    /*border-bottom: 1px solid white;*/
+    /*background-color: transparent;*/
+    /*box-shadow: none;*/
+/*}*/
 
-input[type=password]:focus::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    font-size: 0.8em;
-    transition: font-size 0.3s ease-out;
-}
+/*input[type=password]:focus {*/
+  /*box-shadow: none;*/
+  /*border-bottom: 2px solid rgba(99,20,32,0.5);*/
+/*}*/
 
-input[type=password]::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color:white;
-}
+/*input[type=text]::-webkit-input-placeholder { !* WebKit, Blink, Edge *!*/
+    /*color:white;*/
+    /*transition: font-size 0.2s ease-out;*/
+/*}*/
+
+/*input[type=text]:focus::-webkit-input-placeholder { !* WebKit, Blink, Edge *!*/
+    /*font-size: 0.8em;*/
+/*}*/
+
+/*input[type=password]:focus::-webkit-input-placeholder { !* WebKit, Blink, Edge *!*/
+    /*font-size: 0.8em;*/
+    /*transition: font-size 0.3s ease-out;*/
+/*}*/
+
+/*input[type=password]::-webkit-input-placeholder { !* WebKit, Blink, Edge *!*/
+    /*color:white;*/
+/*}*/
 
 #username {
   margin-bottom: 15px;
   border-radius: 3px;
-  color:white;
 }
 
 #password {
   margin-bottom: 45px;
   border-radius: 3px;
-  color:white;
 }
 
 #signin {
@@ -638,4 +649,26 @@ input[type=password]::-webkit-input-placeholder { /* WebKit, Blink, Edge */
   100% {
     top:-2.9px;
   }
+}
+
+/*  --------------- */
+/*  --------------- */
+/*  --------------- */
+/* Add Picture Page */
+
+.upload_picture_box {
+    min-height:300px;
+    background-color: #353535;
+    box-shadow: 0 1px 4px rgba(0,0,0,.35);
+    cursor:pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.upload_picture_box:hover {
+    background-color: rgba(0,0,0,0.7);
+}
+
+.upload_picture_box p {
+    color:white;
+    line-height:300px;
 }

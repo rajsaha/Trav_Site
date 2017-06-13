@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Picture Mockup</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Travscapade style sheets -->
+    <link href="css/travscapade_styles.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600" rel="stylesheet" />
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">
+                    <img alt="Travscapade" src="images/travscapade-logo-optim.svg" id="site_brand" class="clip-square">
+                </a>
+                <p alt="Travscapade" id="site_brand_text"><b>TRAV</b><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span><span>SCAPADE</span></p>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+
+                <li>
+                    <a><span id="search-button" class="glyphicon glyphicon-search"></span></a>
+                </li>
+
+                <li>
+                    <a>
+                        <input id="autocomplete" type="text"></input>
+                        <span id="button-close-search" class="close">&times;</span>
+                    </a>
+                </li>
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/bucket_list.html">Bucket List</a></li>
+                        <li><a href="/user_pictures.html">Photos</a></li>
+                        <li><a id="button-user-interests">Interests</a></li>
+                        <li><a id="button-logout">Logout</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="upload_picture_box">
+                    <p class="text-center">Your image goes here</p>
+                    <img>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>Enter Title:</label>
+                    <input type="text" class="form-control" placeholder="Your Title">
+                </div>
+
+                <div class="form-group">
+                    <label>Location:</label>
+                    <input type="text" class="form-control" placeholder="Location">
+                </div>
+
+                <div class="form-group">
+                    <label>Enter 1 Interest:</label>
+                    <input type="text" class="form-control" placeholder="Interest">
+                </div>
+
+                <div class="form-group">
+                    <label>Enter a short description:</label>
+                    <input type="text" class="form-control" placeholder="Description">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary form-control">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">&copy;&nbsp;Travscapade</p>
+        </div>
+    </footer>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+</html>
