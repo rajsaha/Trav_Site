@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-client_id" content="244135627049-amvb3pkpavrrqthk7tlocma5lvsoc0un.apps.googleusercontent.com">
     <title>Sign In</title>
 
     <!-- Bootstrap -->
@@ -34,6 +35,8 @@
     </nav> -->
 </head>
 <body>
+    <!--div class="g-signin2" data-onsuccess="onSignIn"></div-->
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6 visible-md visible-lg signin-lc-bg">
@@ -81,7 +84,7 @@
                     <p class="alternative-login hover-shadow">
                         <a id="fb-login-button"><i class="fa fa-facebook" aria-hidden="true"></i>&nbsp&nbspSign In</a>
                         <span id="OR">OR</span>
-                        <a href="https://plus.google.com/"><i class="fa fa-google-plus-official" aria-hidden="true"></i>&nbsp&nbspSign In</a>
+                        <div class="g-signin2" data-onsuccess="onSignIn"><i class="fa fa-google-plus-official" aria-hidden="true"></i>&nbsp&nbspSign In</div>
                     </p>
 
                     <p class="signup-box hover-shadow">
@@ -111,6 +114,7 @@
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="js/backend.js"></script>
     <script src="js/signin_script.js"></script>
 </body>

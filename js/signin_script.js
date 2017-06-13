@@ -15,7 +15,7 @@ function onLogin (name, email, type, id, ppURL) {
 function getMasterInterestList() {
   Backend.getInterests(function(interestListString) {
     sessionStorage.setItem('interestList', interestListString); //String
-    window.location = "/index.html"; 
+    //window.location = "/index.html"; 
   })
 }
 
@@ -32,6 +32,26 @@ function getUrlVars()
     }
     return vars;
 }
+
+function onSignIn(googleUser) {
+  //var authResponse = googleUser.getAuthResponse(true);
+  //console.log(authResponse);
+  //console.log(authResponse.access_token);
+  var id_token = googleUser.getAuthResponse().id_token;
+  sessionStorage.setItem('token', id_token);
+          
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+  onLogin(profile.getName(), profile.getEmail(), "google", profile.getId(), profile.getImageUrl());
+          
+}
+
+
+
 
 
 

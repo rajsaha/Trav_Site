@@ -28,7 +28,7 @@ $(document).ready(function() {
       "title":"Add Blog"
     }
   ];
-  var cardsArray;
+  var cardsArray = [];
   var interestsShown = false;
 
     
@@ -134,11 +134,20 @@ $(document).ready(function() {
 
  
 
-  function populateCards() {
-    $('#update').empty();
+  function populateCards(refresh, newCardIdx) {
+    if(refresh == true) {
+      $('#update').empty();
+    }
+
+    var start = 0;
+    if(newCardIdx) {
+      start = newCardIdx;
+    }
 
     var output = '';
-    $.each(cardsArray, function(k, v) {
+    for (var i=start; i<cardsArray.length;i++) {
+      var v = cardsArray[i];
+    //$.each(cardsArray, function(k, v) {
       console.log(v);
       
       if (v.card_type == 'photo') {
@@ -213,7 +222,7 @@ $(document).ready(function() {
         onBucketList(v._id);
       }
 
-    });
+    }
   }
 
 
@@ -234,10 +243,10 @@ $(document).ready(function() {
     $('.kc_fab_wrapper').kc_fab(links);
 
 
-    //Backend.getCards("589593bbac48cd73cb0811aa", 500, 500, function(data) {
-    Backend.getCards(userID, 500, 500, function(data) {
+    Backend.getCards(cardsArray.length, "589593bbac48cd73cb0811aa", 500, 500, function(data) {
+    //Backend.getCards(cardsArray.length, userID, 500, 500, function(data) {
       cardsArray = data.cards;
-      populateCards();
+      populateCards(true);
 
     //Backend.getCards(userID, 500, 500, function(data) {
       /*var output = '';
@@ -473,9 +482,9 @@ $(document).ready(function() {
   $('#button-close-search').click(function() {
     $('#autocomplete').css('display', 'none');
     $('#button-close-search').css('display', 'none');
-    Backend.getCards(userID, 500, 500, function(data) {
+    Backend.getCards(cardsArray.length, userID, 500, 500, function(data) {
       cardsArray = data.cards;
-      populateCards();
+      populateCards(true);
     });
   }); 
 
@@ -495,7 +504,7 @@ $(document).ready(function() {
         Backend.search(userID, locationString, function(err, data) {
           console.log(data);
           cardsArray = data.cards;
-          populateCards();
+          populateCards(true);
         });
         
       }
@@ -503,6 +512,38 @@ $(document).ready(function() {
 
 
   }); 
+
+
+
+  //Infinite Scroll
+  var loading = false;
+  $(window).scroll(loadMore);
+
+  function loadMore () {
+    if(loading == true) {
+      return;
+    }
+
+    if($(window).scrollTop() > $(document).height()*0.8) {
+      loading = true;
+      console.log("Loading More");
+      Backend.getCards(cardsArray.length, "589593bbac48cd73cb0811aa", 500, 500, function(data) {
+      //Backend.getCards(cardsArray.length, userID, 500, 500, function(data) {
+        if(data.cards.length == 0) {
+          $(window).scroll(null);
+          $('.loader').css('display', 'none');
+          return;
+        }
+        console.log("New Cards");
+        var newIdx = cardsArray.length;
+        cardsArray = cardsArray.concat(data.cards);
+        populateCards(false, newIdx);
+        loading = false;
+      });
+
+    }
+  }
+
 
 
   

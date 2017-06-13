@@ -3,6 +3,7 @@ $(document).ready(function() {
 
     var token = sessionStorage.getItem('token');
     var userID = sessionStorage.getItem('userID');
+    console.log(userID);
 
     var interest;
 
@@ -52,8 +53,9 @@ $(document).ready(function() {
     
 
 
-    var appId = '495600770631539';
-    var roleArn = 'arn:aws:iam::327601793296:role/WebApp';
+    //var appId = '495600770631539';
+    //var roleArn = 'arn:aws:iam::327601793296:role/WebApp';
+    var roleArn = 'arn:aws:iam::327601793296:role/GoogleLogin';
     var bucketName = 'travnet';
     AWS.config.region = 'ap-southeast-1';
 
@@ -66,9 +68,10 @@ $(document).ready(function() {
     });
 
     bucket.config.credentials = new AWS.WebIdentityCredentials({
-        ProviderId: 'graph.facebook.com',
+        //ProviderId: 'graph.facebook.com',
+        ProviderId: null,
         RoleArn: roleArn,
-        WebIdentityToken: token
+        WebIdentityToken: token,
     });
 
 
@@ -173,7 +176,6 @@ $(document).ready(function() {
             return;
         } 
 
-       
         Backend.getUserPictureCount(userID, function(err, count) {
             if(err) {
                 hideLoader();

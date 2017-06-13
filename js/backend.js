@@ -22,18 +22,18 @@ var Backend = (function() {
   }
 
 
-  function getCards(userID, lat, lng, callback) {
+  function getCards(len, userID, lat, lng, callback) {
     var req = new XMLHttpRequest();
-    req.open('POST', url + "getCards", true);
+    req.open('POST', 'http://localhost:8080/api/' + "getCards", true);
      req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    req.send(JSON.stringify({user_id:userID, latitude:lat, longitude:lng}));
+    req.send(JSON.stringify({user_id:userID, start_idx:len, latitude:lat, longitude:lng}));
     req.onreadystatechange = processRequest
 
     function processRequest(e) {
       if (req.readyState == 4 ) {
         console.log(req.statusText);
         if (req.status == 200) {
-          //console.log(req.response);
+          console.log(req.response);
           var res = JSON.parse(req.response);
           callback(res);          
         }
@@ -75,8 +75,9 @@ function getInterests(callback) {
           console.log(req.statusText);
           if (req.status == 200) {
             var res = JSON.parse(req.response);
+            console.log(res);
             var count = res['count'];
-            if(count) {
+            if(count>=0) {
               callback(null, count);          
             } else {
               callback("Cannot get picture count", null);
