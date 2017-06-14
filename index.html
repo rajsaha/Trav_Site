@@ -25,6 +25,9 @@
 
     <!--Modal -->
     <link href="css/modal-interest-select.css" rel="stylesheet">
+
+    <!-- Country Select -->
+    <link rel="stylesheet" href="css/countrySelect.css"> 
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Pacifico|Roboto:300,400,700" rel="stylesheet" />
@@ -70,6 +73,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/kc.fab.js"></script>
+    <script src="js/countrySelect.js"></script>
     <script src="js/backend.js"></script>
     <script src="js/trav_script.js" defer></script>
     <!--script async defer
@@ -118,7 +122,15 @@
       </div>
     </section>
 
-
+    <section>
+      <div id="country-select-modal">
+        <div id="country-bg" class="text-center">
+          <div class="select-nationality-heading">Select Your Nationality</div>
+          <input type="text" id="country">
+          <button id="country-select-button">OK</button>
+        </div>
+      </div>
+    </section>
 
     <div class="container" id="update">
         <!-- Testing Travscapade with Witcher Geralt -->

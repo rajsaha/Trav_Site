@@ -2,7 +2,7 @@ function onLogin (name, email, type, id, ppURL) {
   console.log('Logged in.' + ' name ' + name + ' email ' + email, + ' type ' + type + ' id ' + id + ' ppurl ' + ppURL);
 
   Backend.getUser(name, email, type, id, ppURL, function(user) {
-    //console.log(user);
+    console.log(user);
     var id = user._id;
     sessionStorage.setItem('isLogged','true');
     sessionStorage.setItem('userID', id);
