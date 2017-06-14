@@ -17,7 +17,7 @@ $(document).ready(function() {
     });
 
     function updateImage(data) {
-        var imgURL = cropper.data.output.image.toDataURL("image/png");
+        var imgURL = cropper.data.output.image.toDataURL("image/jpeg");
         cropper.ratio = 'input';
         cropper.load(imgURL, function(error, data){
             if(error) {
@@ -141,6 +141,27 @@ $(document).ready(function() {
     $('#submit-button').click(function() {
         //console.log(autocomplete.getPlace());
 
+        console.log(cropper.data.output.width + " " + cropper.data.output.height);
+        var w = cropper.data.output.width;
+        var h = cropper.data.output.height;
+        if (w>h) {
+            if(w<1024 || h<768) {
+                window.alert("Image Too Small. Minimum resolution is 1024x768");
+                return;        
+            }
+        } else if (w==h) {
+            if(w<1024 || h<1024) {
+                window.alert("Image Too Small. Minimum resolution is 1024x1024");
+                return;        
+            }
+        } else if (w<h) {
+            if(w<1024 || h<1365) {
+                window.alert("Image Too Small. Minimum resolution is 1024x1365");
+                return;        
+            }
+        } 
+
+
         if (!cropper.data.output.image) {
             window.alert("Image Not Uploaded");
             return;
@@ -158,23 +179,24 @@ $(document).ready(function() {
             return;
         }
 
-        showLoader();
-
 
         //Get Image file
-        var binStr = atob( cropper.data.output.image.toDataURL("image/png").split(',')[1] ),
+        var binStr = atob( cropper.data.output.image.toDataURL("image/jpeg").split(',')[1] ),
             len = binStr.length,
             arr = new Uint8Array(len);
         for (var i=0; i<len; i++ ) {
             arr[i] = binStr.charCodeAt(i);
         }
-        var file = new Blob( [arr], {type: 'image/png'} );    
+        var file = new Blob( [arr], {type: 'image/jpeg'} );    
 
         if (!file) {
             hideLoader();
             window.alert("Error Reading Image");
             return;
         } 
+
+
+        showLoader();
 
         Backend.getUserPictureCount(userID, function(err, count) {
             if(err) {
@@ -202,7 +224,7 @@ $(document).ready(function() {
 
 
     function uploadToS3(idx, imageFile, callback) {
-        var objKey = userID + '-' + idx + '.png';
+        var objKey = userID + '-' + idx + '.jpeg';
         var params = {
             Key: objKey,
             ContentType: imageFile.type,
@@ -226,7 +248,7 @@ $(document).ready(function() {
         var description = document.getElementById('description').value;
         var heading = document.getElementById('heading').value;
         var place = autocomplete.getPlace();
-        var pictureUrl = "https://travnet.s3.amazonaws.com/" + userID + '-' + pictureIdx + '.png';
+        var pictureUrl = "https://travnet.s3.amazonaws.com/" + userID + '-' + pictureIdx + '.jpeg';
         var addrArray = place['formatted_address'].split(',');
         var country = addrArray[addrArray.length-1];
         var locationString = place['name'] + ", " + country;
