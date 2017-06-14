@@ -198,7 +198,7 @@ body {
 .user-content {
   position: relative; 
   width: 100%;
-  background-color: rgba(255,0,0);
+  background-color: rgb(255,0,0);
 }
 
 
@@ -672,3 +672,11 @@ body {
     color:white;
     line-height:300px;
 }
+
+.top-margin {
+    margin-top:50px;
+}
+
+/*.bottom-margin {*/
+    /*margin-bottom:50px;*/
+/*}*/
