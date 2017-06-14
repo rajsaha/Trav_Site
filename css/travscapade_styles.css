@@ -342,6 +342,32 @@ body {
 }
 
 
+#country-select-modal {
+  display: none;
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4); 
+}
+
+#country-bg {
+  width: 25em;
+  height: 15em;
+  margin: 15% auto; /* 15% from the top and centered */
+  border: 1px solid #888;
+  background: rgba(0,0,0,0.8);
+}
+
+.select-nationality-heading {
+  width: 100%;
+  text-align: center;
+  padding: 1em 2em;
+  color: #FFFFFF; 
+}
 
 
 #autocomplete {

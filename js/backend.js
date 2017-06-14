@@ -24,7 +24,7 @@ var Backend = (function() {
 
   function getCards(len, userID, lat, lng, callback) {
     var req = new XMLHttpRequest();
-    req.open('POST', 'http://localhost:8080/api/' + "getCards", true);
+    req.open('POST', url + "getCards", true);
      req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.send(JSON.stringify({user_id:userID, start_idx:len, latitude:lat, longitude:lng}));
     req.onreadystatechange = processRequest
@@ -33,7 +33,7 @@ var Backend = (function() {
       if (req.readyState == 4 ) {
         console.log(req.statusText);
         if (req.status == 200) {
-          console.log(req.response);
+          //console.log(req.response);
           var res = JSON.parse(req.response);
           callback(res);          
         }
@@ -300,7 +300,23 @@ function getInterests(callback) {
   }
 
   
+  function registerNationality(userID, nationality, callback) {
+    var req = new XMLHttpRequest();
+    req.open('POST', url + "registerNationality", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({user_id:userID, nationality:nationality})); 
+    req.onreadystatechange = processRequest
 
+    function processRequest(e) {
+      if (req.readyState == 4 ) {
+        if (req.status == 200) {
+          console.log(req.response);
+          callback();
+        } else {
+        } 
+      }    
+    } 
+  }
 
 
   return {
@@ -317,6 +333,7 @@ function getInterests(callback) {
     registerLikeCard:registerLikeCard,
     registerBucketCard:registerBucketCard,
     search:search,
+    registerNationality:registerNationality,
   }
 
    

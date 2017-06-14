@@ -1,12 +1,16 @@
 var map;
 var destination = {lat: 0, lng: 0};
+var userLocation;
 var marker;
 
 $(document).ready(function() {
 
 
   var userID = sessionStorage.getItem('userID');
+  //userID = "589593bbac48cd73cb0811aa";
   var user = JSON.parse(sessionStorage.getItem('user'));
+  if(user)
+    var nationality= user.nationality;
   var interestList = JSON.parse(sessionStorage.getItem('interestList'));
   var links = [
     {
@@ -147,7 +151,6 @@ $(document).ready(function() {
     var output = '';
     for (var i=start; i<cardsArray.length;i++) {
       var v = cardsArray[i];
-    //$.each(cardsArray, function(k, v) {
       console.log(v);
       
       if (v.card_type == 'photo') {
@@ -172,6 +175,10 @@ $(document).ready(function() {
         output +=       '<a id="travel-type">' + v.interests + '</a>';
         output +=       '<a>' + v.user_name + '</a>';
         output +=       '<a><img src="' + v.user_profile_pic + '"/></a>';
+        output +=     '</div>';
+        output +=     '<div id="user-dep-details">';
+        output +=       '<span id="distance_' + v._id + '"></span>';
+        output +=       '<a class="visa" id="visa_' + v._id + '"></a>';
         output +=     '</div>';
         output +=     '<div id="description_' + v._id + '" class="picture-description"><p class="'+ v._id +'">'+ v.description +'</p></div>';
         output +=   '</div>';
@@ -205,6 +212,9 @@ $(document).ready(function() {
         output +=       '<a>' + v.user_name + '</a>';
         output +=       '<a><img src="' + v.user_profile_pic + '"/></a>';
         output +=     '</div>';
+        output +=     '<div id="user-dep-details">';
+        output +=     '<span id="distance_' + v._id + '"></span>';
+        output +=     '</div>';
         output +=   '</div>';
         output +=   '<div class="col-md-4" >';
         output +=   '</div>'
@@ -212,6 +222,34 @@ $(document).ready(function() {
       }
 
       $('#update').append(output);
+
+      if('distance' in v) {
+        $('#distance_'+v._id).html(getDistanceString(v.distance));
+      } else {
+        $('#distance_'+v._id).css('display', 'none');
+      }
+
+
+      if('visa_info' in v) {
+        if (v.visa_info == "Nationality needed") {
+          $('#visa_'+v._id).html("Visa Info");
+          $('#visa_'+v._id).click(visaCallback);
+        } else if (v.visa_info == "Not available") {
+          $('#visa_'+v._id).html("Visa Info Unavailable");
+        } else {
+          $('#visa_'+v._id).html(v.visa_info);
+        }
+      }
+
+
+      /*if('visa_info' in v) {
+        $('#visa_'+v._id).html(v.visa_info);
+      } else if (nationality) {
+        $('#visa_'+v._id).html("Not Availbale");
+      } else {
+        $('#visa_'+v._id).html("Visa Info");
+        $('#visa_'+v._id).click(visaCallback);
+      }*/
 
       if(v.is_liked == true){
         onLike(v._id);
@@ -225,30 +263,87 @@ $(document).ready(function() {
     }
   }
 
+  function getDistanceString(distance) {
+    var time = (distance/920) + 1;
+    var hr = Math.floor(time);
+    var min = (time - hr) * 60;
+    var roundedMin;
+    if(min < 7.5) {
+      roundedMin = 0; 
+    } else if (min > 7.5 && min < 22.5){
+      roundedMin = 15;
+    } else if (min > 22.5 && min < 37.5){
+      roundedMin = 30;
+    } else if (min > 37.5 && min < 52.5){
+      roundedMin = 45;
+    }  else {
+      roundedMin = 0;
+      hr++;
+    }
+    return "About " + hr + "hr " + (roundedMin!=0 ? roundedMin+"min" : "") + " flight.";  
+  }
 
 
+  function getUserLocation() {
+    if (sessionStorage.getItem('user_location')) {
+      userLocation = JSON.parse(sessionStorage.getItem('user_location'));
+      return;
+    } else {
+      userLocation = {
+        lat: 500,
+        lng: 500,
+      }
+    }
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          sessionStorage.setItem('user_location', JSON.stringify(userLocation));
+          console.log(userLocation);
+          refresh();
+        }, function(err) {
+          console.log("Not Availbale");
+        });
+    } else {
+      console.log("Not Supported");
+    }
+  }
 
 
+  function refresh() {
+    cardsArray = [];
+    //Backend.getCards(cardsArray.length, "589593bbac48cd73cb0811aa", userLocation.lat, userLocation.lng, function(data) {
+    Backend.getCards(cardsArray.length, userID, userLocation.lat, userLocation.lng, function(data) {
+      cardsArray = data.cards;
+      populateCards(true);
+    });
+  }
 
 
   function setupHomePage() {
+    getUserLocation();
+
     var js_file = document.createElement('script');
     js_file.type = 'text/javascript';
     js_file.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&callback=initMap';
     document.getElementsByTagName('head')[0].appendChild(js_file);
 
     setupAutoComplete();
+    $("#country").countrySelect();
 
     
     $('.kc_fab_wrapper').kc_fab(links);
 
-
-    Backend.getCards(cardsArray.length, "589593bbac48cd73cb0811aa", 500, 500, function(data) {
-    //Backend.getCards(cardsArray.length, userID, 500, 500, function(data) {
+    console.log(userLocation);
+    //Backend.getCards(cardsArray.length, "589593bbac48cd73cb0811aa", userLocation.lat, userLocation.lng, function(data) {
+    Backend.getCards(cardsArray.length, userID, userLocation.lat, userLocation.lng, function(data) {
       cardsArray = data.cards;
       populateCards(true);
 
-    //Backend.getCards(userID, 500, 500, function(data) {
+    //Backend.getCards(userID, userLocation.lat, userLocation.lng, function(data) {
       /*var output = '';
       cardsArray = data.cards;
       $.each(data.cards, function(k, v) {
@@ -331,6 +426,23 @@ $(document).ready(function() {
   }
 
 
+  function closeCountrySelectModal() {
+     $('#country-select-modal').css('display', 'none');
+  }
+
+ //$(document).on("click", ".visa" , function() {
+  function visaCallback() {  
+    $('#country-select-modal').css('display', 'block');
+    $('#country-select-button').click(function() {
+      var countryName = $("#country").countrySelect("getSelectedCountryData").name;
+      countryName = countryName.split("(")[0];
+      console.log(countryName);
+      closeCountrySelectModal();
+      Backend.registerNationality(userID, countryName, function() {
+        refresh();
+      });
+    })
+  }
 
 
   $(document).on("click", ".heart" , function() {
@@ -482,10 +594,11 @@ $(document).ready(function() {
   $('#button-close-search').click(function() {
     $('#autocomplete').css('display', 'none');
     $('#button-close-search').css('display', 'none');
-    Backend.getCards(cardsArray.length, userID, 500, 500, function(data) {
+    refresh();
+    /*Backend.getCards(cardsArray.length, userID, userLocation.lat, userLocation.lng, function(data) {
       cardsArray = data.cards;
       populateCards(true);
-    });
+    });*/
   }); 
 
 
@@ -527,8 +640,8 @@ $(document).ready(function() {
     if($(window).scrollTop() > $(document).height()*0.8) {
       loading = true;
       console.log("Loading More");
-      Backend.getCards(cardsArray.length, "589593bbac48cd73cb0811aa", 500, 500, function(data) {
-      //Backend.getCards(cardsArray.length, userID, 500, 500, function(data) {
+      //Backend.getCards(cardsArray.length, "589593bbac48cd73cb0811aa", userLocation.lat, userLocation.lng, function(data) {
+      Backend.getCards(cardsArray.length, userID, userLocation.lat, userLocation.lng, function(data) {
         if(data.cards.length == 0) {
           $(window).scroll(null);
           $('.loader').css('display', 'none');
