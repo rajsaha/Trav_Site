@@ -218,6 +218,7 @@ body {
       rgba(0, 0, 0, 0.6)
     );
   display: none;
+  pointer-events: none;
 
 }
 

@@ -6,7 +6,7 @@ var Backend = (function() {
   var req = new XMLHttpRequest();
   req.open('POST', url + "registerUser", true);
   req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  req.send(JSON.stringify({name:name, email:userEmail})); 
+  req.send(JSON.stringify({name:name, email:userEmail, profile_pic:ppURL})); 
   req.onreadystatechange = processRequest
  
    function processRequest(e) {
@@ -197,7 +197,7 @@ function getInterests(callback) {
     }
 
 
-    function getUserPictures(userID, callback) {
+    function getUserCards(userID, callback) {
       var req = new XMLHttpRequest();
       req.open('POST', url + "getUserCards", true);
       req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -210,13 +210,13 @@ function getInterests(callback) {
           if (req.status == 200) {
             var res = JSON.parse(req.response);
             var pictureCards = [];
-            res.cards.forEach(function(card) {
+            /*res.cards.forEach(function(card) {
               if (card.card_type =='photo') {
                 pictureCards.push(card);
               }
-            });
+            });*/
 
-            callback(null, pictureCards);
+            callback(null, res.cards);
           } else {
             callback("err");
           } 
@@ -318,6 +318,26 @@ function getInterests(callback) {
     } 
   }
 
+  function getUserInfo(userID, callback) {
+    var req = new XMLHttpRequest();
+    //req.open('POST', "http://localhost:8080/api/" + "getUserInfo", true);
+    req.open('POST', url + "getUserInfo", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({user_id:userID})); 
+    req.onreadystatechange = processRequest
+
+    function processRequest(e) {
+      if (req.readyState == 4 ) {
+        if (req.status == 200) {
+          var res = JSON.parse(req.response);
+          callback(null, res);
+        } else {
+          callback(err);
+        } 
+      }    
+    } 
+  }
+
 
   return {
     getUser: getUser,
@@ -328,12 +348,13 @@ function getInterests(callback) {
     getLinkPreview: getLinkPreview,
     postBlogCard:postBlogCard,
     getBucketList:getBucketList,
-    getUserPictures:getUserPictures,
+    getUserCards:getUserCards,
     updateUserInterests:updateUserInterests,
     registerLikeCard:registerLikeCard,
     registerBucketCard:registerBucketCard,
     search:search,
     registerNationality:registerNationality,
+    getUserInfo:getUserInfo,
   }
 
    

@@ -95,7 +95,8 @@ $(document).ready(function() {
           sessionStorage.setItem('token', response.authResponse.accessToken);
           FB.api('/me', {fields: 'name, email, id, picture'}, function(response) {
               console.log(response);
-              onLogin(response.name, response.email, "fb", response.id, response.picture.data.url);
+              var ppUrl = "https://graph.facebook.com/" + response.id + "/picture?type=large";
+              onLogin(response.name, response.email, "fb", response.id, ppUrl);
           });
         }
       }
@@ -107,7 +108,8 @@ $(document).ready(function() {
           sessionStorage.setItem('token', response.authResponse.accessToken);
           FB.api('/me', {fields: 'name, email, id, picture'}, function(response) {
               console.log(response);
-              onLogin(response.name, response.email, "fb", response.id, response.picture.data.url);
+              var ppUrl = "https://graph.facebook.com/" + response.id + "/picture?type=large";
+              onLogin(response.name, response.email, "fb", response.id, ppUrl);
           });
         }, {scope: 'public_profile,email'});
       });

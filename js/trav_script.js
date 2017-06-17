@@ -6,8 +6,8 @@ var marker;
 $(document).ready(function() {
 
 
-  var userID = sessionStorage.getItem('userID');
-  //userID = "589593bbac48cd73cb0811aa";
+  //var userID = sessionStorage.getItem('userID');
+  userID = "589593bbac48cd73cb0811aa";
   var user = JSON.parse(sessionStorage.getItem('user'));
   if(user)
     var nationality= user.nationality;
@@ -251,6 +251,14 @@ $(document).ready(function() {
         $('#visa_'+v._id).click(visaCallback);
       }*/
 
+      if(v.card_type == "photo") {
+        $('#'+v._id).click(function(e) {
+          console.log($(this)[0].id);
+          var id = $(this)[0].id;
+          openFullscreen(getCard(id));
+        });
+      }
+
       if(v.is_liked == true){
         onLike(v._id);
       } 
@@ -295,7 +303,7 @@ $(document).ready(function() {
       }
     }
 
-    if (navigator.geolocation) {
+    /*if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
           userLocation = {
             lat: position.coords.latitude,
@@ -309,7 +317,7 @@ $(document).ready(function() {
         });
     } else {
       console.log("Not Supported");
-    }
+    }*/
   }
 
 
@@ -506,6 +514,32 @@ $(document).ready(function() {
 
   }
 
+
+  function closeFullscreen(card) {
+    $('#fullscreen-modal').css('display', 'none');
+  }
+
+  function openFullscreen(card) {
+    console.log(card.url);
+    $('#fullscreen-modal').css('display', 'block');
+    $('#button-close-fullscreen').click(closeFullscreen);
+    $('#fullscreen-image').attr('src', card.url);
+
+    //console.log(card.picture_width + " " + card.picture_height);
+    if(card.picture_height < card.picture_width) {
+      console.log("l");
+      $('#fullscreen-content').css('width', '50%');
+    } else {
+      console.log('p');
+      $('#fullscreen-content').css('width', '40%');
+    }
+
+    var w = $('#fullscreen-image-div').width();
+    var h = (card.picture_height/card.picture_width)*w;
+    var marginTop = ($(window).height()) / 2 - (h / 2);
+    $('#fullscreen-content').css('margin-top', marginTop);
+
+  }
 
 
   function openLocationInfoModal(cardID) {
