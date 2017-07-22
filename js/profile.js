@@ -2,6 +2,23 @@ $(document).ready(function() {
 
 	var pictureCards = [];
 	var blogCards = [];
+	var userID;
+
+	//Get user id from url
+	var qParams = getUrlVars();
+ 	console.log(qParams);
+ 	if('user' in qParams) {
+	 	if (qParams['user'] == 'self') {
+	 		userID = sessionStorage.getItem('userID');
+	 		console.log(userID);
+	 	} else {
+	 		userID = qParams['user'];
+	 	}
+ 	} else {
+ 		console.log("User ID not found");
+ 	}
+
+
 
 
 	$('#tab-headers a').click(function (e) {
@@ -10,11 +27,9 @@ $(document).ready(function() {
 	});
 
 
-	//Get user id from url
-
 	//local test
-	//var userID = "588b2b72da66b9a4379fc335";
-	var userID = "589593bbac48cd73cb0811aa";
+	var userID = "588b2b72da66b9a4379fc335";
+	//var userID = "589593bbac48cd73cb0811aa";
 
 	Backend.getUserInfo(userID, function(err, user) {
 		if(err) {
@@ -80,3 +95,17 @@ $(document).ready(function() {
 	}
 
 });
+
+
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}

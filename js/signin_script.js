@@ -5,6 +5,7 @@ function onLogin (name, email, type, id, ppURL) {
     console.log(user);
     var id = user._id;
     sessionStorage.setItem('isLogged','true');
+    sessionStorage.setItem('login-type', type);
     sessionStorage.setItem('userID', id);
     sessionStorage.setItem("user", JSON.stringify(user));
     getMasterInterestList();
@@ -15,7 +16,8 @@ function onLogin (name, email, type, id, ppURL) {
 function getMasterInterestList() {
   Backend.getInterests(function(interestListString) {
     sessionStorage.setItem('interestList', interestListString); //String
-    //window.location = "/index.html"; 
+    //console.log(sessionStorage.getItem('interestList'));
+    window.location = "/index.html"; 
   })
 }
 
@@ -80,9 +82,7 @@ var startApp = function() {
 $(document).ready(function() {
 
   //test 
-  /*getUserID("Hassan Ali Askari", "sunny_the_mastermind@hotmail.com", function(id) {
-    console.log(id);
-  });*/
+  //onLogin("Hassan Ali Askari", "sunny_the_mastermind@hotmail.com");
 
 
   startApp();

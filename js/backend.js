@@ -1,6 +1,8 @@
 var Backend = (function() {
 
-  var url = "http://54.169.51.25/api/";
+  var url = "https://backend.travscapade.com:443/api/";
+  //var url = "http://54.169.51.25/api/";
+  //var url = 'localhost:8080/api/';
 
   function getUser(name, userEmail, type, id, ppURL, callback) {
   var req = new XMLHttpRequest();
@@ -111,9 +113,12 @@ function getInterests(callback) {
         if (req.readyState == 4 ) {
           console.log(req.statusText);
           if (req.status == 200) {
-            //console.log(req.response);
             var res = JSON.parse(req.response);
-            callback();
+            if('saved_card' in res) {
+              callback(null, res.saved_card);
+            } else {
+              callback("err");
+            }
           }
         }    
       } 
@@ -168,7 +173,11 @@ function getInterests(callback) {
           if (req.status == 200) {
             //console.log(req.response);
             var res = JSON.parse(req.response);
-            callback();
+            if('saved_card' in res) {
+              callback(null, res.saved_card);
+            } else {
+              callback("err");
+            }
           }
         }    
       } 
@@ -188,7 +197,12 @@ function getInterests(callback) {
           console.log(req.statusText);
           if (req.status == 200) {
             var res = JSON.parse(req.response);
-            callback(null, res.bucket_list);
+            console.log(res);
+            if(res.bucket_list) {
+              callback(null, res.bucket_list);
+            } else {
+              callback("err");
+            }
           } else {
             callback("err");
           } 
@@ -339,6 +353,74 @@ function getInterests(callback) {
   }
 
 
+  function updateUserLocation(userID, lat, lng, callback) {
+    var req = new XMLHttpRequest();
+    req.open('POST', url + "updateLocation", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({user_id:userID, lat: lat, lng: lng})); 
+    req.onreadystatechange = processRequest
+
+    function processRequest(e) {
+      if (req.readyState == 4 ) {
+        if (req.status == 200) {
+          var res = JSON.parse(req.response);
+          if('user_id' in res) {
+            callback(null);
+          } else {
+            callback("err");  
+          }
+        } else {
+          callback("err");
+        } 
+      }    
+    } 
+  }
+
+
+
+  function adminGetLocations(userID, callback) {
+    var req = new XMLHttpRequest();
+    req.open('POST', "http://localhost:8080/api/" + "adminGetLocations", true);
+    //req.open('POST', url + "adminGetLocations", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({user_id:userID})); 
+    req.onreadystatechange = processRequest
+
+    function processRequest(e) {
+      if (req.readyState == 4 ) {
+        if (req.status == 200) {
+          var res = JSON.parse(req.response);
+          callback(null, res);
+        } else {
+          callback(err);
+        } 
+      }    
+    } 
+  }
+
+
+  function adminUpdateLocation(locationObj, callback) {
+    var req = new XMLHttpRequest();
+    req.open('POST', "http://localhost:8080/api/" + "adminUpdateLocation", true);
+    //req.open('POST', url + "adminUpdateLocation", true);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify({location_obj:locationObj})); 
+    req.onreadystatechange = processRequest
+
+    function processRequest(e) {
+      if (req.readyState == 4 ) {
+        if (req.status == 200) {
+          var res = JSON.parse(req.response);
+          callback(null, res);
+        } else {
+          callback(err);
+        } 
+      }    
+    } 
+  }
+
+
+
   return {
     getUser: getUser,
     getCards: getCards,
@@ -355,6 +437,9 @@ function getInterests(callback) {
     search:search,
     registerNationality:registerNationality,
     getUserInfo:getUserInfo,
+    updateUserLocation:updateUserLocation,
+    adminGetLocations:adminGetLocations,
+    adminUpdateLocation:adminUpdateLocation,
   }
 
    

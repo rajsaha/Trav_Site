@@ -1,12 +1,41 @@
 $(document).ready(function() {
 
 	var userID = sessionStorage.getItem('userID');
+	var user = JSON.parse(sessionStorage.getItem("user"));
 	var blogTitle;
 	var blogUrl;
 	var thumbnailUrl;
 	var blogExtract;
 	var interests = [];
 
+
+
+	adminStuffs();
+	function adminStuffs() {
+	    if ('user_type' in user) {
+	        if (user.user_type == "admin") {
+	            console.log("Welcome Admin");
+	            var container = $('#middle-col');
+	            
+	            var inp = $('<input />');
+	            inp.attr('id', 'user-id-override');
+	            inp.css('margin-top', '2em');
+	            
+	            var inp2 = $('<input />');
+	            inp2.attr('id', 'thumbnail-override');
+	            
+	            var inp3 = $('<input />');
+	            inp3.attr('id', 'extract-override');
+
+	            container.append("User ID: ");
+	            inp.appendTo(container);
+		        container.append("<br/>Thumbnail Picture Override: ");
+		        inp2.appendTo(container);
+		        container.append("<br/>Extract Override: ");
+		        inp3.appendTo(container);    
+	        }
+	    }
+	}
 
 
 	function leaveInput(el) {
@@ -93,8 +122,8 @@ $(document).ready(function() {
 					//$('#thumbnail').css('display', 'block');
 
 					autocomplete = new google.maps.places.Autocomplete(
-					        (document.getElementById('autocomplete')),
-					        {types: ['geocode']});
+					        (document.getElementById('autocomplete')) /*,
+					        {types: ['geocode']} */);
 
 					$('#interest-input').click(function() {
 						openInterestSeletion(null, 3, onInterestSelected);
@@ -201,6 +230,23 @@ $(document).ready(function() {
             return;
         }
 
+        //Admin UserID Override
+        if(document.getElementById('user-id-override').value != "") {
+            console.log("Overriding user ID");
+            userID =  document.getElementById('user-id-override').value;
+            if(document.getElementById('thumbnail-override').value != "") {
+            	thumbnailUrl = document.getElementById('thumbnail-override').value;
+            }
+			if(document.getElementById('extract-override').value != "") {
+            	blogExtract = document.getElementById('extract-override').value;
+            }
+                        
+
+
+        } 
+
+		showLoader();	
+
         var place = autocomplete.getPlace();
         var addrArray = place['formatted_address'].split(',');
         var country = addrArray[addrArray.length-1];
@@ -209,8 +255,14 @@ $(document).ready(function() {
         var lng = place.geometry.location.lng();
 
         console.log(blogUrl);
-        Backend.postBlogCard(userID, blogUrl, blogTitle, blogExtract, thumbnailUrl, interests, place.id, locationString, lat, lng, function() {
-        	window.location = "/index.html";
+        Backend.postBlogCard(userID, blogUrl, blogTitle, blogExtract, thumbnailUrl, interests, place.id, locationString, lat, lng, function(err, savedCard) {
+        	hideLoader();
+        	if (err) {
+               window.alert("Failed to upload to server"); 
+            } else {
+        		sessionStorage.setItem("uploaded_card", JSON.stringify(savedCard));
+        		window.location = "/index.html";
+        	}
         })
 
 	});

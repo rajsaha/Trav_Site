@@ -34,7 +34,7 @@ nav.navbar.navbar-inverse {
 
 
 #site_brand_text {
-	font-family: 'Architects Daughter', cursive;
+	 font-family: 'Architects Daughter', cursive;
     display: inline-block;
     padding-top: 10px;
     font-size: 2.5em;
@@ -58,7 +58,7 @@ nav.navbar.navbar-inverse {
 	left: 0px;
 	width: 100%;
 	height: 100%;
-	background: rgba(0,0,0,0.5);
+	background: rgba(0,0,0,0.4);
 	z-index: 2;
 }
 
@@ -67,7 +67,7 @@ nav.navbar.navbar-inverse {
 	position: absolute;
 	top: 35%;
 	right:10%;
-	background: rgba(0,0,0,0.5);
+	background: rgba(0,0,0,0.6);
 	z-index: 5;
 	text-align: center;
 }

@@ -1,17 +1,32 @@
 var map;
 var destination = {lat: 0, lng: 0};
 var userLocation;
-var marker;
+var marker, userMarker;
 
 $(document).ready(function() {
 
 
-  //var userID = sessionStorage.getItem('userID');
-  userID = "589593bbac48cd73cb0811aa";
+  var userID = sessionStorage.getItem('userID');
+  //userID = "589593bbac48cd73cb0811aa";
   var user = JSON.parse(sessionStorage.getItem('user'));
+  console.log(user);
   if(user)
     var nationality= user.nationality;
   var interestList = JSON.parse(sessionStorage.getItem('interestList'));
+
+  if(sessionStorage.getItem('uploaded_card')) {
+    console.log("Uploaded Card Present");
+    var uploadedCard = JSON.parse(sessionStorage.getItem('uploaded_card'));
+    console.log(uploadedCard);
+  }
+
+  var cardsArray = [];
+  if(sessionStorage.getItem('cards')) {
+    cardsArray = JSON.parse(sessionStorage.getItem('cards'));
+  } else {
+
+  }
+
   var links = [
     {
       "bgcolor":"red",
@@ -32,37 +47,37 @@ $(document).ready(function() {
       "title":"Add Blog"
     }
   ];
-  var cardsArray = [];
   var interestsShown = false;
+  var isSearchResults = false;
 
     
   /*console.log(user);
-  console.log(interestList);
+  console.log(interestList);*/
 
 
 
 
   if (user.interests.length == 0) {
     console.log("Requesting interest");
-    openInterestSelection(null, function(selectedInterests) {
-      console.log("User has selected: ", selectedInterests);
+    openInterestSeletion(null, 100, function(selectedInterests) {
       user.interests = selectedInterests;
       updateUserInterests(selectedInterests);
+      closeInterestSeletion();
       setupHomePage();
     });    
   } else {
     setupHomePage();
-  }*/
+  }
 
   //Test in Local
-  setupHomePage();
+  //setupHomePage();
 
 
 
   function setupAutoComplete() {
     autocomplete = new google.maps.places.Autocomplete(
-          (document.getElementById('autocomplete')),
-          {types: ['geocode']});
+          (document.getElementById('autocomplete')) /*,
+          {types: ['geocode']}*/ );
   }
 
 
@@ -79,14 +94,14 @@ $(document).ready(function() {
 
 
 
-  function closeInterestSeletion() {
+  /*function closeInterestSeletion() {
     //selectedInterests = [];
     //$('#interest-list').empty();
     $('#select-interest-modal').css('display', 'none');
-  }
+  }*/
 
 
-  function openInterestSelection(preSelectedInterests, callback) {
+  /*function openInterestSelection(preSelectedInterests, callback) {
     $('#select-interest-modal').css('display', 'block');
     $('#button-close-modal').click(function() {
       closeInterestSeletion();
@@ -133,7 +148,7 @@ $(document).ready(function() {
     });
       
     
-  }
+  }*/
 
 
  
@@ -163,24 +178,24 @@ $(document).ready(function() {
         output +=       '<div id="overlay_' + v._id + '" class="overlay-picture"></div>';
         output +=       '<div id="location_' + v._id + '" value="' + v._id + '" class="location-text-picture"><p class="'+ v._id +'">'+ v.location +'</p></div>';
         output +=     '</div>';
+        output +=     '<div id="description_' + v._id + '" class="picture-description"><p class="'+ v._id +'">'+ v.description +'</p></div>';
         output +=     '<div class="buttons-div">'; 
         output +=       '<p class="text-center">';
         output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
         output +=         '<span class="likes" id="likes_' + v._id + '">' + v.likes + '</span>';
         output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
         output +=         '<span id="bucket_count_' + v._id + '">' + v.bucket_count + '</span>';
-        output +=       '</p><br />';
+        output +=       '</p>';
         output +=     '</div>';
-        output +=     '<div id="details" class="text-center">';
-        output +=       '<a id="travel-type">' + v.interests + '</a>';
-        output +=       '<a>' + v.user_name + '</a>';
+        output +=     '<div id="details">';
+        output +=       '<a id="travel-type-blog">' + v.interests + '</a><br>';
+        output +=       '<div id="distance_' + v._id + '"></div>';
+        output +=       '<div class="visa" id="visa_' + v._id + '"></div>';
+        output +=     '</div>';
+        output +=     '<div id="uploader">';
         output +=       '<a><img src="' + v.user_profile_pic + '"/></a>';
+        output +=       '<a>' + v.user_name + '</a>';
         output +=     '</div>';
-        output +=     '<div id="user-dep-details">';
-        output +=       '<span id="distance_' + v._id + '"></span>';
-        output +=       '<a class="visa" id="visa_' + v._id + '"></a>';
-        output +=     '</div>';
-        output +=     '<div id="description_' + v._id + '" class="picture-description"><p class="'+ v._id +'">'+ v.description +'</p></div>';
         output +=   '</div>';
         output +=   '<div class="col-md-4" >';
         output +=   '</div>'
@@ -188,32 +203,38 @@ $(document).ready(function() {
 
         
       } else if (v.card_type == "blog") {
+        var imageURL = "https://backend.travscapade.com:443/api/getImage?url=" + v.thumbnail;
+
         output =  '<div class="row">';
         output +=   '<div class="col-md-4" >';
         output +=   '</div>'
         output +=   '<div class="col-md-4 travscapade" >';
-        output +=     '<div class="blog-title"><p>' + v.title + '</p></div>';
-        output +=     '<div class="user-content">';
-        output +=       '<img src="' + v.thumbnail + '" id="'+ v._id + '" class="travimage" data-name="travimage" />';
-        output +=       '<div class="overlay-blog"></div>';
-        output +=       '<div class="blog-extract"><p>' + v.description + '</p></div>';
-        output +=     '</div>';
-        output +=     '<div id="location_' + v._id + '" class="location-text-blog"><p class="'+ v._id +'">'+ v.location +'</p></div>';
+        output +=     '<a target="_blank" href="' + v.url + '">';
+        output +=       '<div class="blog-title"><p>' + v.title + '</p></div>';
+        output +=       '<div class="user-content">';
+        output +=         '<img src="' + imageURL + '" id="'+ v._id + '" class="travimage" data-name="travimage" />';
+        output +=         '<div class="overlay-blog"></div>';
+        output +=         '<div class="blog-extract"><p>' + v.description + '</p></div>';
+        output +=       '</div>';
+        output +=     '</a>';
+        output +=     '<div id="location_' + v._id + '" value="' + v._id + '" class="location-text-blog"><p class="'+ v._id +'">'+ v.location +'</p></div>';
+        //output +=     '<div id="location_' + v._id + '" class="location-text-blog"><p class="'+ v._id +'">'+ v.location +'</p></div>';
         output +=     '<div class="buttons-div">'; 
         output +=       '<p class="text-center">';
         output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
         output +=         '<span class="likes" id="likes_' + v._id + '">' + v.likes + '</span>';
         output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
         output +=         '<span id="bucket_count_' + v._id + '">' + v.bucket_count + '</span>';
-        output +=       '</p><br />';
+        output +=       '</p>';
         output +=     '</div>';
         output +=     '<div id="details">';
-        output +=       '<a id="travel-type-blog">' + v.interests + '</a><br>';
-        output +=       '<a>' + v.user_name + '</a>';
-        output +=       '<a><img src="' + v.user_profile_pic + '"/></a>';
+        output +=       '<a id="travel-type-blog">' + v.interests.join(', ') + '</a><br>';
+        output +=       '<div id="distance_' + v._id + '"></div>';
+        output +=       '<div class="visa" id="visa_' + v._id + '"></div>';
         output +=     '</div>';
-        output +=     '<div id="user-dep-details">';
-        output +=     '<span id="distance_' + v._id + '"></span>';
+        output +=     '<div id="uploader">';
+        output +=       '<a><img src="' + v.user_profile_pic + '"/></a>';
+        output +=       '<a>' + v.user_name + '</a>';
         output +=     '</div>';
         output +=   '</div>';
         output +=   '<div class="col-md-4" >';
@@ -292,8 +313,25 @@ $(document).ready(function() {
   }
 
 
+  function openLocationRequest(callback) {
+    $('#location-request-modal').css('display', 'block');
+    $('#location-request-ok').click(function() {
+      closeLocationRequest();
+      callback("ok");
+    });
+
+    $('#location-request-cancel').click(function() {
+      closeLocationRequest();
+      callback("cancel");
+    });
+  }
+
+  function closeLocationRequest() {
+    $('#location-request-modal').css('display', 'none');    
+  }
+
   function getUserLocation() {
-    if (sessionStorage.getItem('user_location')) {
+    /*if (sessionStorage.getItem('user_location')) {
       userLocation = JSON.parse(sessionStorage.getItem('user_location'));
       return;
     } else {
@@ -301,7 +339,56 @@ $(document).ready(function() {
         lat: 500,
         lng: 500,
       }
+    }*/
+
+    if (user.location_lat && user.location_lng) {
+      userLocation = {
+        lat: user.location_lat,
+        lng: user.location_lng,
+      };
+      return;
+    } else {
+      //Default
+      userLocation = {
+        lat: 500,
+        lng: 500,
+      }
     }
+
+
+
+    if (navigator.geolocation) {
+
+      openLocationRequest(function(status) {
+        if (status == "cancel") {
+
+        } else {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+
+              user.location_lat = position.coords.latitude;
+              user.location_lng = position.coords.longitude;
+              sessionStorage.setItem("user", JSON.stringify(user));
+              Backend.updateUserLocation(userID, position.coords.latitude, position.coords.longitude, function(err) {
+                if (err) {
+
+                }
+              });
+
+              console.log(user.location_lat, user.location_lng);
+              refresh();
+            }, function(err) {
+              console.log("Not Availbale");
+            });       
+        }
+      });
+    } else {
+      console.log("Not Supported");
+    }
+
 
     /*if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -326,6 +413,7 @@ $(document).ready(function() {
     //Backend.getCards(cardsArray.length, "589593bbac48cd73cb0811aa", userLocation.lat, userLocation.lng, function(data) {
     Backend.getCards(cardsArray.length, userID, userLocation.lat, userLocation.lng, function(data) {
       cardsArray = data.cards;
+      sessionStorage.setItem("cards", JSON.stringify(cardsArray));
       populateCards(true);
     });
   }
@@ -334,103 +422,39 @@ $(document).ready(function() {
   function setupHomePage() {
     getUserLocation();
 
-    var js_file = document.createElement('script');
-    js_file.type = 'text/javascript';
-    js_file.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&callback=initMap';
-    document.getElementsByTagName('head')[0].appendChild(js_file);
+    //var js_file = document.createElement('script');
+    //js_file.type = 'text/javascript';
+    //js_file.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&libraries=places&callback=initMap';
+    //document.getElementsByTagName('head')[0].appendChild(js_file);
 
     setupAutoComplete();
-    $("#country").countrySelect();
+    //$("#country").countrySelect("destroy");
+    //console.log("destroyed");
+    //if (cardsArray.length != 0)
+      //$("#country").countrySelect({defaultCountry: "af"});
 
     
     $('.kc_fab_wrapper').kc_fab(links);
 
     console.log(userLocation);
     //Backend.getCards(cardsArray.length, "589593bbac48cd73cb0811aa", userLocation.lat, userLocation.lng, function(data) {
-    Backend.getCards(cardsArray.length, userID, userLocation.lat, userLocation.lng, function(data) {
-      cardsArray = data.cards;
+    if(cardsArray.length != 0) {
+      console.log("cards already exist");
+      if(uploadedCard) {
+        var temp = [];
+        temp.push(uploadedCard);
+        cardsArray = temp.concat(cardsArray);
+        sessionStorage.removeItem("uploaded_card");
+      }
       populateCards(true);
-
-    //Backend.getCards(userID, userLocation.lat, userLocation.lng, function(data) {
-      /*var output = '';
-      cardsArray = data.cards;
-      $.each(data.cards, function(k, v) {
-        console.log(v);
-        
-        if (v.card_type == 'photo') {
-          output =   '<div class="row">';
-          output +=   '<div class="col-md-4" >';
-          output +=   '</div>'
-          output +=   '<div class="col-md-4 travscapade">';
-          output +=     '<div class="user-content">';
-          output +=       '<img src="' + v.url + '" id="'+ v._id + '" class="travimage center-block" data-name="travimage" />';
-          output +=       '<div id="overlay_' + v._id + '" class="overlay-picture"></div>';
-          output +=       '<div id="location_' + v._id + '" value="' + v._id + '" class="location-text-picture"><p class="'+ v._id +'">'+ v.location +'</p></div>';
-          output +=     '</div>';
-          output +=     '<div class="buttons-div">'; 
-          output +=       '<p class="text-center">';
-          output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
-          output +=         '<span class="likes" id="likes_' + v._id + '">' + v.likes + '</span>';
-          output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
-          output +=         '<span id="bucket_count_' + v._id + '">' + v.bucket_count + '</span>';
-          output +=       '</p><br />';
-          output +=     '</div>';
-          output +=     '<div id="details" class="text-center">';
-          output +=       '<a id="travel-type">' + v.interests + '</a>';
-          output +=       '<a>' + v.user_name + '</a>';
-          output +=       '<a><img src="' + v.user_profile_pic + '"/></a>';
-          output +=     '</div>';
-          output +=     '<div id="description_' + v._id + '" class="picture-description"><p class="'+ v._id +'">'+ v.description +'</p></div>';
-          output +=   '</div>';
-          output +=   '<div class="col-md-4" >';
-          output +=   '</div>'
-          output +=  '</div>';
-
-          
-        } else if (v.card_type == "blog") {
-          output =  '<div class="row">';
-          output +=   '<div class="col-md-4" >';
-          output +=   '</div>'
-          output +=   '<div class="col-md-4 travscapade" >';
-          output +=     '<div class="blog-title"><p>' + v.title + '</p></div>';
-          output +=     '<div class="user-content">';
-          output +=       '<img src="' + v.thumbnail + '" id="'+ v._id + '" class="travimage" data-name="travimage" />';
-          output +=       '<div class="overlay-blog"></div>';
-          output +=       '<div class="blog-extract"><p>' + v.description + '</p></div>';
-          output +=     '</div>';
-          output +=     '<div id="location_' + v._id + '" class="location-text-blog"><p class="'+ v._id +'">'+ v.location +'</p></div>';
-          output +=     '<div class="buttons-div">'; 
-          output +=       '<p class="text-center">';
-          output +=         '<button id="like_button_' + v._id + '" class="glyphicon glyphicon-heart heart button-override" aria-hidden="true" value="'+ v._id +'"></button>';
-          output +=         '<span class="likes" id="likes_' + v._id + '">' + v.likes + '</span>';
-          output +=         '<button id="bucket_button_' + v._id + '" class="glyphicon glyphicon-plus button-override" aria-hidden="true" value="'+ v._id +'"></button>';
-          output +=         '<span id="bucket_count_' + v._id + '">' + v.bucket_count + '</span>';
-          output +=       '</p><br />';
-          output +=     '</div>';
-          output +=     '<div id="details">';
-          output +=       '<a id="travel-type-blog">' + v.interests + '</a><br>';
-          output +=       '<a>' + v.user_name + '</a>';
-          output +=       '<a><img src="' + v.user_profile_pic + '"/></a>';
-          output +=     '</div>';
-          output +=   '</div>';
-          output +=   '<div class="col-md-4" >';
-          output +=   '</div>'
-          output +=  '</div>';
-        }
-
-        $('#update').append(output);
-
-        if(v.is_liked == true){
-          onLike(v._id);
-        } 
-
-        if(v.is_bucket_listed == true){
-          console.log(v._id);
-          onBucketList(v._id);
-        }
-
-      });*/
-    });
+    } else {
+      console.log("fetching cards");
+      Backend.getCards(cardsArray.length, userID, userLocation.lat, userLocation.lng, function(data) {
+        cardsArray = data.cards;
+        sessionStorage.setItem("cards", JSON.stringify(cardsArray));
+        populateCards(true);
+      });
+    }
   }
 
 
@@ -440,6 +464,7 @@ $(document).ready(function() {
 
  //$(document).on("click", ".visa" , function() {
   function visaCallback() {  
+    $("#country").countrySelect({defaultCountry: "af"});
     $('#country-select-modal').css('display', 'block');
     $('#country-select-button').click(function() {
       var countryName = $("#country").countrySelect("getSelectedCountryData").name;
@@ -478,16 +503,25 @@ $(document).ready(function() {
     openLocationInfoModal($(this).attr("value"));
   });
 
+  $(document).on("click", ".location-text-blog" , function() {
+    openLocationInfoModal($(this).attr("value"));
+  });
 
-  $('#button-close-modal').click(function() {
+
+  $('#button-close-location').click(function() {
     closeLocationInfoModal();
   });
 
   $('#button-user-interests').click(function() {
-    openInterestSelection(user.interests, function(selectedInterests) {
+    if (!user) {
+      window.alert("Not Logged in");
+    }
+
+    openInterestSeletion(user.interests, 100, function(selectedInterests) {
       user.interests = selectedInterests;
       updateUserInterests(selectedInterests);
-    })
+      closeInterestSeletion();
+    });
   });
 
 
@@ -502,7 +536,12 @@ $(document).ready(function() {
     $('#like_button_'+cardID).prop('disabled', true);
     $('#overlay_'+cardID).css("display", "block");
     $('#location_'+cardID).css("display", "block");
-    $('#description_'+cardID).css("display", "block");
+    if(getCard(cardID).description != "") {
+      //$('#description_'+cardID).css("display", "block");
+      //$('#description_'+cardID).css("max-height", "10em");
+      //$('#description_'+cardID).removeClass('picture-description');
+      $('#description_'+cardID).addClass('picture-description-displayed');
+    }
     $('#likes_'+cardID).html(cardsArray[getCardIdx(cardID)].likes);
   }
 
@@ -556,26 +595,60 @@ $(document).ready(function() {
       position: destination,
       map: map
     });
-    map.panTo(destination);
-   
+
+    var userIcon = {
+      url: "/images/user-location-marker.png",
+      scaledSize: new google.maps.Size(50, 50)
+    };
+    if(!userMarker) {
+      if(userLocation.lat != 500 && userLocation.lng != 500) {
+        userMarker = new google.maps.Marker({
+          position: userLocation,
+          map: map,
+          icon: userIcon
+        });
+      } 
+    }
+
+    if(userLocation.lat != 500 && userLocation.lng != 500) {
+      var bounds = new google.maps.LatLngBounds();
+      bounds.extend(destination);
+      bounds.extend(userLocation);
+      map.fitBounds(bounds);  
+    } else {
+      map.panTo(destination);
+    }
 
 
 
 
     $('#location-info-name').html(card.location_info_name);
     $('#location-info-summary').html(card.location_info_summary);
-    $('#location-info-link').attr("href", card.location_info_link);
+    $('#link').attr("href", card.location_info_link);
 
     var monthNames = ['Jan', 'Feb', 'Mar', "Apr", "May", "Jun", 'Jul', 'Aug', 'Sep', "Oct", 'Nov', 'Dec'];
     var scoreBar = $('#score-bar');
     scoreBar.empty();
     for (var i=0; i<12; i++) {
-      var mon = $('<span/>', {'text':monthNames[i]});
+      var mon = $('<span/>');
+      mon.css('text-align', 'center');
+      //mon.css('color', '#FFFFFF')
+      mon.css('height', '2em');
       mon.css('display', 'inline-block');
+      mon.css('position', 'relative');
       mon.css('width', '8.3%');
       if(i==0) {
         mon.css('margin-left', '0.2%');
       }
+      var overlay = $('<div />');
+      overlay.addClass('score-bar-overlay');
+      overlay.appendTo(mon);
+      var monName = $('<p />');
+      monName.html(monthNames[i]);
+      monName.addClass('mon-name');
+      monName.appendTo(mon);  
+      
+
       var score = Math.floor(card.location_score[i]);
       if (score == 3)
         score =2;
@@ -626,23 +699,33 @@ $(document).ready(function() {
 
 
   $('#button-close-search').click(function() {
-    $('#autocomplete').css('display', 'none');
-    $('#button-close-search').css('display', 'none');
-    refresh();
-    /*Backend.getCards(cardsArray.length, userID, userLocation.lat, userLocation.lng, function(data) {
-      cardsArray = data.cards;
+    $('#search-box').css('display', 'none');
+    $('#search-button').css('display', 'inline-block');
+    $('#search-empty').css('display', 'none');
+      
+    //$('#button-close-search').css('display', 'none');
+
+    $('.loader').css('display', 'block');
+    isSearchResults = false;
+    if(sessionStorage.getItem('cards')) {
+      cardsArray = JSON.parse(sessionStorage.getItem('cards'));
       populateCards(true);
-    });*/
+    } else {
+      refresh();
+    }
   }); 
 
 
   //Search 
   $('#search-button').click(function() {
-    if ($('#autocomplete').css('display') == 'none') {
-      $('#autocomplete').css('display', 'inline-block');
-      $('#button-close-search').css('display', 'inline-block');
+    if ($('#search-box').css('display') == 'none') {
+      $('#search-box').css('display', 'inline-block');
+      $('#search-button').css('display', 'none');
+      $('#autocomplete').val("");
+      $('#autocomplete').focus();
+      //$('#button-close-search').css('display', 'inline-block');
     } else {
-      var place = autocomplete.getPlace();
+      /*var place = autocomplete.getPlace();
       if (!place) {
 
       } else {
@@ -652,13 +735,32 @@ $(document).ready(function() {
           console.log(data);
           cardsArray = data.cards;
           populateCards(true);
-        });
-        
-      }
+        }); 
+      }*/
     }
+  });
 
+  google.maps.event.addListener(autocomplete, 'place_changed', onSearchRequested); 
 
-  }); 
+  function onSearchRequested() {
+    var place = autocomplete.getPlace();
+    if (!place) {
+
+    } else {
+      console.log(place['formatted_address']);
+      var locationString = place['formatted_address'];
+      Backend.search(userID, locationString, function(err, data) {
+        $('.loader').css('display', 'none');
+        console.log(data);
+        cardsArray = data.cards;
+        if(cardsArray.length == 0) {
+          $('#search-empty').css('display', 'block');
+        } 
+        populateCards(true);
+        isSearchResults = true;
+      });
+    }
+  }
 
 
 
@@ -668,6 +770,10 @@ $(document).ready(function() {
 
   function loadMore () {
     if(loading == true) {
+      return;
+    }
+
+    if(isSearchResults == true) {
       return;
     }
 
@@ -684,6 +790,7 @@ $(document).ready(function() {
         console.log("New Cards");
         var newIdx = cardsArray.length;
         cardsArray = cardsArray.concat(data.cards);
+        sessionStorage.setItem("cards", JSON.stringify(cardsArray));
         populateCards(false, newIdx);
         loading = false;
       });

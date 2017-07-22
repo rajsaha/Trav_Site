@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!--script type="text/javascript">
+<script type="text/javascript">
     if (sessionStorage.getItem("isLogged") != "true") {
         window.location = "/signin.html";
     }
 
-</script-->
+</script>
 
 <head>
     <meta charset="utf-8">
@@ -27,23 +27,33 @@
     <link href="css/modal-interest-select.css" rel="stylesheet">
 
     <!-- Country Select -->
-    <link rel="stylesheet" href="css/countrySelect.css"> 
+    <link href="css/countrySelect.css" rel="stylesheet"> 
     
     <!-- Fullscreen -->
-    <link rel="stylesheet" href="css/fullscreen.css"> 
+    <link href="css/fullscreen.css" rel="stylesheet"> 
+
+    <link href="css/modal-location-info.css" rel="stylesheet"> 
     
     <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Architects+Daughter" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Pacifico|Roboto:300,400,700" rel="stylesheet" />
 
     <!-- Navbar -->
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                    <img alt="Travscapade" src="images/logo.png" id="site_brand" class="clip-square">
+                </a>
+                <p alt="Travscapade" id="site_brand_text">Travscapade</span></p>
+            </div>
+            <!--div class="navbar-header">
                 <a class="navbar-brand" href="index.html">
                     <img alt="Travscapade" src="images/travscapade-logo-optim.svg" id="site_brand" class="clip-square">
                 </a>
                 <p alt="Travscapade" id="site_brand_text"><b>TRAV</b><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span><span>SCAPADE</span></p>
-            </div>
+            </div-->
 
             <ul class="nav navbar-nav navbar-right">
 
@@ -52,8 +62,8 @@
                 </li>
                 
                 <li>
-                  <a>
-                    <input id="autocomplete" type="text"></input>
+                  <a id="search-box">
+                    <input id="autocomplete" class="search-input" type="search"></input>
                     <span id="button-close-search" class="close">&times;</span>
                   </a>
                 </li>
@@ -61,8 +71,9 @@
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span></a>
                     <ul class="dropdown-menu">
+                        <li><a href="/profile.html?user=self">Profile</a></li>
                         <li><a href="/bucket_list.html">Bucket List</a></li>
-                        <li><a href="/user_pictures.html">Photos</a></li>
+                        <!--li><a href="/user_pictures.html">Photos</a></li-->
                         <li><a id="button-user-interests">Interests</a></li>
                         <li><a id="button-logout">Logout</a></li>
                     </ul>
@@ -77,12 +88,13 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/kc.fab.js"></script>
     <script src="js/countrySelect.js"></script>
+    <script src="js/interest-selection.js"></script>
     <script src="js/backend.js"></script>
-    <script src="js/trav_script.js" defer></script>
+    <script src="js/trav_script.js"></script>
     <!--script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&callback=initMap">
     </script-->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&libraries=places"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&libraries=places&callback=initMap" defer></script>
     
     
 </head>
@@ -101,36 +113,33 @@
 
 
    <section>
-     <div id="select-interest-modal" class="modal">
-
-       <!-- Modal content -->
-       <div class="modal-content">
-         <span id="button-close-modal" class="close">&times;</span>
+     <div id="select-interest-modal">
+       <div id="interest-modal-content">
+         <span id="button-close-modal">&times;</span>
+         <div class="select-interest-heading"> My Interests</div>
          <div id="interest-list">
          </div>
        </div>
-
-
      </div>
-
    </section>
 
 
 
 
     <section>
-      <div id="location-info-modal" class="modal">
+      <div id="location-info-modal">
 
         <!-- Modal content -->
-        <div class="modal-content">
-          <span id="button-close-modal" class="close">&times;</span>
-          <div id="map" style="height:300px;"></div>
+        <div id="location-info-content">
+          <span id="button-close-location">&times;</span>
+          <div id="map"></div>
           <div id="location-info">
             <p id="location-info-name"></p>
             <p id="location-info-summary"></p>
-            <a id="location-info-link">Read More</a>
+            <p id="location-info-link"><a id="link" target="_blank">Read More</a></p>
           </div>
-          <div id="score-bar" style="height:30px;"></div>;
+          <p>Best Time to go:</p>
+          <div id="score-bar"></div>; 
         </div>
       </div>
     </section>
@@ -144,6 +153,24 @@
         </div>
       </div>
     </section>
+
+    <section>
+      <div id="search-empty">
+        <p>No results found. We are continuously adding new contents - so check back in a few days!</p>
+      </div>
+    </section>
+
+    <section>
+      <div id="location-request-modal">
+        <div id="location-request-content" class="center-block">
+          <p>For a personalized feed, allow Travscapade to access your location.</p>
+          <button id="location-request-ok">OK</button>
+          <button id="location-request-cancel">NOT NOW</button>
+        </div>
+      </div>
+    </section>
+
+
 
     <div class="container" id="update">
         <!-- Testing Travscapade with Witcher Geralt -->

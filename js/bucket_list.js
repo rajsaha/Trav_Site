@@ -15,7 +15,7 @@ $(document).ready(function() {
 	js_file.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDI1IKGx1lrpkAszfQZQ-NNpyt9Fi0CBNs&callback=initMap';
 	document.getElementsByTagName('head')[0].appendChild(js_file);
 
-	Backend.getBucketList("589593bbac48cd73cb0811aa", function(err, data) {
+	Backend.getBucketList(userID, function(err, data) {
 		if(err) {
 			window.alert("Could not Fetch Bucket List");
 		} else {

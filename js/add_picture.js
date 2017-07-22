@@ -1,8 +1,9 @@
 $(document).ready(function() {
 
-
+    var loginType = sessionStorage.getItem('login-type');
     var token = sessionStorage.getItem('token');
     var userID = sessionStorage.getItem('userID');
+    var user = JSON.parse(sessionStorage.getItem("user"));
     console.log(userID);
 
     var interest;
@@ -15,6 +16,26 @@ $(document).ready(function() {
         buttonConfirmLabel: 'Ok',
         didConfirm: updateImage,
     });
+
+
+    adminStuffs();
+    function adminStuffs() {
+        if ('user_type' in user) {
+            if (user.user_type == "admin") {
+                console.log("Welcome Admin");
+                var container = $('#middle-col');
+                var inp = $('<input />');
+                inp.attr('id', 'user-id-override');
+                inp.css('margin-top', '2em');
+                
+                container.append("User ID: ");
+                inp.appendTo(container);
+            }
+        }
+    }
+
+
+
 
     function updateImage(data) {
         var imgURL = cropper.data.output.image.toDataURL("image/jpeg");
@@ -54,8 +75,13 @@ $(document).ready(function() {
 
 
     //var appId = '495600770631539';
-    //var roleArn = 'arn:aws:iam::327601793296:role/WebApp';
-    var roleArn = 'arn:aws:iam::327601793296:role/GoogleLogin';
+    console.log(loginType);
+    var roleArn;
+    if(loginType == "fb") {
+        roleArn = 'arn:aws:iam::327601793296:role/WebApp';
+    } else if (loginType == "google") {
+        roleArn = 'arn:aws:iam::327601793296:role/GoogleLogin';
+    }
     var bucketName = 'travnet';
     AWS.config.region = 'ap-southeast-1';
 
@@ -67,19 +93,32 @@ $(document).ready(function() {
         }
     });
 
-    bucket.config.credentials = new AWS.WebIdentityCredentials({
+    /*bucket.config.credentials = new AWS.WebIdentityCredentials({
         //ProviderId: 'graph.facebook.com',
-        ProviderId: null,
+        //ProviderId: null,
         RoleArn: roleArn,
         WebIdentityToken: token,
-    });
+    });*/
 
+    if(loginType == "fb") {
+        bucket.config.credentials = new AWS.WebIdentityCredentials({
+            ProviderId: 'graph.facebook.com',
+            RoleArn: roleArn,
+            WebIdentityToken: token,
+        });
+    } else if (loginType == "google") {
+        bucket.config.credentials = new AWS.WebIdentityCredentials({
+            ProviderId: null,
+            RoleArn: roleArn,
+            WebIdentityToken: token,
+        });
+    }
 
+    console.log(bucket.config.credentials);
 
     //Google Autocomplete
     autocomplete = new google.maps.places.Autocomplete(
-            (document.getElementById('autocomplete')),
-            {types: ['geocode']});
+            (document.getElementById('autocomplete')) /*, {types: ['geocode']}*/);
 
 
 
@@ -144,20 +183,23 @@ $(document).ready(function() {
         console.log(cropper.data.output.width + " " + cropper.data.output.height);
         var w = cropper.data.output.width;
         var h = cropper.data.output.height;
-        if (w>h) {
-            if(w<1024 || h<768) {
-                window.alert("Image Too Small. Minimum resolution is 1024x768");
-                return;        
-            }
-        } else if (w==h) {
-            if(w<1024 || h<1024) {
-                window.alert("Image Too Small. Minimum resolution is 1024x1024");
-                return;        
-            }
-        } else if (w<h) {
-            if(w<1024 || h<1365) {
-                window.alert("Image Too Small. Minimum resolution is 1024x1365");
-                return;        
+
+        if(document.getElementById('user-id-override').value == "") {
+            if (w>h) {
+                if(w<1024 || h<768) {
+                    window.alert("Image Too Small. Minimum resolution is 1024x768");
+                    return;        
+                }
+            } else if (w==h) {
+                if(w<1024 || h<1024) {
+                    window.alert("Image Too Small. Minimum resolution is 1024x1024");
+                    return;        
+                }
+            } else if (w<h) {
+                if(w<1024 || h<1365) {
+                    window.alert("Image Too Small. Minimum resolution is 1024x1365");
+                    return;        
+                }
             }
         } 
 
@@ -194,6 +236,13 @@ $(document).ready(function() {
             window.alert("Error Reading Image");
             return;
         } 
+
+        //Admin UserID Override
+        if(document.getElementById('user-id-override').value != "") {
+            console.log("Overriding user ID");
+            userID =  document.getElementById('user-id-override').value;
+        } 
+
 
 
         showLoader();
@@ -246,19 +295,25 @@ $(document).ready(function() {
     function postPictureCard() {
         //var interest = selectInterest.options[selectInterest.selectedIndex].value;
         var description = document.getElementById('description').value;
-        var heading = document.getElementById('heading').value;
+        //var heading = document.getElementById('heading').value;
         var place = autocomplete.getPlace();
         var pictureUrl = "https://travnet.s3.amazonaws.com/" + userID + '-' + pictureIdx + '.jpeg';
         var addrArray = place['formatted_address'].split(',');
         var country = addrArray[addrArray.length-1];
         var locationString = place['name'] + ", " + country;
 
-        console.log(userID + "\n" + pictureUrl + "\n" + heading + "\n" + place.id + "\n" + locationString + "\n" + place.geometry.location.lat() + "\n" + place.geometry.location.lng() + "\n" + interest + "\n" + description);
+        console.log(userID + "\n" + pictureUrl + "\n" + "\n" + place.id + "\n" + locationString + "\n" + place.geometry.location.lat() + "\n" + place.geometry.location.lng() + "\n" + interest + "\n" + description);
 
-        Backend.postPictureCard(userID, pictureUrl, heading, place.id, locationString, place.geometry.location.lat(), place.geometry.location.lng(), interest, description, function() {
+        Backend.postPictureCard(userID, pictureUrl, "", place.id, locationString, place.geometry.location.lat(), place.geometry.location.lng(), interest, description, function(err, savedCard) {
             hideLoader();
-            console.log("Successfully Posted Picture");
-            window.location = "/index.html";
+            if (err) {
+               window.alert("Failed to upload to server"); 
+            } else {
+                console.log("Successfully Posted Picture");
+                console.log(savedCard);
+                sessionStorage.setItem("uploaded_card", JSON.stringify(savedCard));
+                window.location = "/index.html";
+            }
         });
 
 

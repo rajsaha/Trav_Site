@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<script type="text/javascript">
+    if (sessionStorage.getItem("isLogged") != "true") {
+        window.location = "/signin.html";
+    }
+
+</script>
+
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,11 +39,10 @@
 
 
    <section>
-     <div id="select-interest-modal" class="modal">
-       <!-- Modal content -->
-       <div class="modal-content">
-         <span id="button-close-modal" class="close">&times;</span>
-         <div class="select-interest-heading"> Please select an interest.</div>
+     <div id="select-interest-modal">
+       <div id="interest-modal-content">
+         <span id="button-close-modal">&times;</span>
+         <div class="select-interest-heading"> Select Upto 3 interests.</div>
          <div id="interest-list">
          </div>
        </div>
@@ -48,7 +55,7 @@
           <div class="col-md-4">
           </div>
           
-          <div class="col-md-4">
+          <div class="col-md-4" id="middle-col">
             <div id="preview">
             	<div id="title"></div> 
             	<img id="thumbnail"></img>
